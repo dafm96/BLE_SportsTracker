@@ -3,11 +3,11 @@ const app = express()
 const ble = require('./ble')
 
 app.get('/peripherals', function (req, res) {
-    res.send(ble.peripherals.map(p => p.peripheral.address))
+    res.send(ble.peripherals.map(p => p.address))
 })
 
 app.get('/peripherals/:peripheralAddress', function (req, res) {
-    res.send(ble.peripherals.filter(p => p.address === req.params.peripheralAddress))
+    res.json(ble.peripherals.filter(p => p.address === req.params.peripheralAddress)[0])
 })
 
 app.post('/peripherals/:peripheralAddress/startRaw', function (req, res) {
