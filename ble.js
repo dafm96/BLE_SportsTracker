@@ -23,6 +23,10 @@ function bufferToByteArray(buffer) {
   return Array.prototype.slice.call(buffer, 0)
 }
 
+function getPeripherals () {
+  return peripherals;
+}
+
 function MPUConfig(peripheralAddress) {
   let peripheral = peripherals.find(p => p.address === peripheralAddress)
   if (peripheral) {
@@ -191,4 +195,4 @@ noble.on('discover', function (peripheral) {
   }
 })
 
-var exports = module.exports = { peripherals, startRaw, idle, shutdown };
+var exports = module.exports = { getPeripherals, startRaw, idle, shutdown };

@@ -3,7 +3,7 @@ const app = express()
 const ble = require('./ble')
 
 app.get('/peripherals', function (req, res) {
-    res.send(ble.peripherals.map(p => p.address))
+    res.send(ble.getPeripherals().map(p => p.address))
 })
 
 app.get('/peripherals/:peripheralAddress', function (req, res) {
