@@ -20,6 +20,11 @@ app.post('/peripherals/:peripheralAddress/stopRaw', function (req, res) {
     res.send()
 })
 
+app.post('/peripherals/:peripheralAddress/shutdown', function (req, res) {
+    ble.shutdown(req.params.peripheralAddress)
+    res.send()
+})
+
 app.post('/startAllRaw', function (req, res) {
     ble.getPeripherals().map(p => p.address).forEach(element => {
         ble.startRaw(element)
