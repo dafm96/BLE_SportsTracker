@@ -44,6 +44,23 @@ function MPUConfig(peripheralAddress) {
   }
 }
 
+function changeRate(peripheralAddress, rateMs) {
+  let peripheral = peripherals.find(p => p.address === peripheralAddress)
+  if (peripheral) {
+    peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff3b'], function (error, services, characteristics) {
+      var RateCharacteristic = characteristics.find(c => c.uuid == 'ff3b');
+      RateCharacteristic.write(new Buffer([rateMs]), true, function (error) {
+        if (error) {
+          console.log(error)
+        }
+        else {
+          console.log('Changed rate to ' + rateMs + 'ms')
+        }
+      })
+    })
+  }
+}
+
 function startRaw(peripheralAddress) {
   let peripheral = peripherals.find(p => p.address === peripheralAddress)
   peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35', 'ff38', 'ff3c'], function (error, services, characteristics) {
