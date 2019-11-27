@@ -170,17 +170,16 @@ noble.on('discover', function (peripheral) {
   console.log(address)
   if (whitelist.includes(peripheral.address.toUpperCase()) && peripheral.state === 'disconnected') {
 
-    peripheral.on('connect', function () {
+    peripheral.once('connect', function () {
       console.log(address, 'connected');
       peripherals.push(peripheral);
       MPUConfig(address)
     })
 
 
-    peripheral.on('disconnect', function () {
+    peripheral.once('disconnect', function () {
       console.log(address, 'disconnected');
       peripherals = peripherals.filter(p => {return p.address !== peripheral.address})
-      console.log(peripherals.map(p => p.address))
     });
 
     peripheral.connect(function (error) {
