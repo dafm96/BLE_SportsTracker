@@ -7,7 +7,7 @@ app.get('/peripherals', function (req, res) {
 })
 
 app.get('/peripherals/:peripheralAddress', function (req, res) {
-    res.json(ble.peripherals.filter(p => p.address === req.params.peripheralAddress)[0])
+    res.json(ble.getPeripherals().filter(p => p.address === req.params.peripheralAddress)[0])
 })
 
 app.post('/peripherals/:peripheralAddress/startRaw', function (req, res) {
@@ -21,14 +21,14 @@ app.post('/peripherals/:peripheralAddress/stopRaw', function (req, res) {
 })
 
 app.post('/startAllRaw', function (req, res) {
-    ble.peripherals.map(p => p.address).forEach(element => {
+    ble.getPeripherals().map(p => p.address).forEach(element => {
         ble.startRaw(element)
     });
     res.send()
 })
 
 app.post('/shutdownAll', function (req, res) {
-    ble.peripherals.map(p => p.address).forEach(element => {
+    ble.getPeripherals().map(p => p.address).forEach(element => {
         ble.shutdown(element)
     });
     res.send()
