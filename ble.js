@@ -30,7 +30,7 @@ function getPeripherals () {
 function MPUConfig(peripheralAddress) {
   let peripheral = peripherals.find(p => p.address === peripheralAddress)
   if (peripheral) {
-    peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35', 'ff38', 'ff3c'], function (error, services, characteristics) {
+    peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff3c'], function (error, services, characteristics) {
       var MPUCharacteristic = characteristics.find(c => c.uuid == 'ff3c');
       MPUCharacteristic.write(new Buffer([0x07, 0x00, 0x00, 0x08, 0x03, 0x03, 0x10]), true, function (error) {
         if (error) {
@@ -63,7 +63,7 @@ function changeRate(peripheralAddress, rateMs) {
 
 function startRaw(peripheralAddress) {
   let peripheral = peripherals.find(p => p.address === peripheralAddress)
-  peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35', 'ff38', 'ff3c'], function (error, services, characteristics) {
+  peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35', 'ff38'], function (error, services, characteristics) {
     var SmartLifeService = services[0];
     var stateCharacteristic = characteristics.find(c => c.uuid == 'ff35');
     var rawCharacteristic = characteristics.find(c => c.uuid == 'ff38');
@@ -134,7 +134,7 @@ function startRaw(peripheralAddress) {
 function idle(peripheralAddress) {
   let peripheral = peripherals.find(p => p.address === peripheralAddress)
   if (peripheral) {
-    peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35', 'ff38', 'ff3c'], function (error, services, characteristics) {
+    peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35', 'ff38'], function (error, services, characteristics) {
       var SmartLifeService = services[0];
       var stateCharacteristic = characteristics.find(c => c.uuid == 'ff35');
       var rawCharacteristic = characteristics.find(c => c.uuid == 'ff38');
@@ -154,7 +154,7 @@ function idle(peripheralAddress) {
 function shutdown(peripheralAddress) {
   let peripheral = peripherals.find(p => p.address === peripheralAddress)
   if (peripheral) {
-    peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35', 'ff38', 'ff3c'], function (error, services, characteristics) {
+    peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35'], function (error, services, characteristics) {
       var SmartLifeService = services[0];
       var stateCharacteristic = characteristics.find(c => c.uuid == 'ff35');
 
@@ -191,6 +191,16 @@ noble.on('discover', function (peripheral) {
       console.log(address, 'connected');
       peripherals.push(peripheral);
       MPUConfig(address)
+      peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35', 'ff37'], function (error, services, characteristics) {
+        var SmartLifeService = services[0];
+        var stateCharacteristic = characteristics.find(c => c.uuid == 'ff35');
+        var buttonCharacteristic = characteristics.find(c => c.uuid == 'ff37');
+
+        stateCharacteristic.on('data', function (data, isNotification) {
+        })
+        buttonCharacteristic.on('data', function (data, isNotification) {
+        })
+      })
     })
 
 
