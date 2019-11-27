@@ -23,7 +23,7 @@ function bufferToByteArray(buffer) {
   return Array.prototype.slice.call(buffer, 0)
 }
 
-function getPeripherals () {
+function getPeripherals() {
   return peripherals;
 }
 
@@ -63,72 +63,74 @@ function changeRate(peripheralAddress, rateMs) {
 
 function startRaw(peripheralAddress) {
   let peripheral = peripherals.find(p => p.address === peripheralAddress)
-  peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35', 'ff38'], function (error, services, characteristics) {
-    var SmartLifeService = services[0];
-    var stateCharacteristic = characteristics.find(c => c.uuid == 'ff35');
-    var rawCharacteristic = characteristics.find(c => c.uuid == 'ff38');
+  if (peripheral) {
+    peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35', 'ff38'], function (error, services, characteristics) {
+      var SmartLifeService = services[0];
+      var stateCharacteristic = characteristics.find(c => c.uuid == 'ff35');
+      var rawCharacteristic = characteristics.find(c => c.uuid == 'ff38');
 
-    stateCharacteristic.write(new Buffer([0x01]), true, function (error) {
-      console.log('Started RAW');
+      stateCharacteristic.write(new Buffer([0x01]), true, function (error) {
+        console.log('Started RAW');
 
-      // to enable notify
-      rawCharacteristic.subscribe(function (error) {
-        console.log('raw notification on');
-      });
+        // to enable notify
+        rawCharacteristic.subscribe(function (error) {
+          console.log('raw notification on');
+        });
 
-      rawCharacteristic.on('data', function (data, isNotification) {
-        let outputs = [];
-        let arr = Array.prototype.slice.call(data, 0)
-        let ratio_ACC = (4.0 / 32767); //originally 4.0
-        let ratio_GYR = (1000.0 / 32767);
+        rawCharacteristic.on('data', function (data, isNotification) {
+          let outputs = [];
+          let arr = Array.prototype.slice.call(data, 0)
+          let ratio_ACC = (4.0 / 32767); //originally 4.0
+          let ratio_GYR = (1000.0 / 32767);
 
-        let nSample = ((arr[1] & 0xFF) << 8 | arr[0] & 0xFF);
-        let accX = 0;
-        let accY = 0;
-        let accZ = 0;
-        let gyrX = 0;
-        let gyrY = 0;
-        let gyrZ = 0;
-        
+          let nSample = ((arr[1] & 0xFF) << 8 | arr[0] & 0xFF);
+          let accX = 0;
+          let accY = 0;
+          let accZ = 0;
+          let gyrX = 0;
+          let gyrY = 0;
+          let gyrZ = 0;
 
-        for (let i = 0; i < 9; i++) {
-          let mov = (arr[2 * i + 3] & 0xFF) << 8 | arr[2 * i + 2] & 0xFF;
-          if (mov > 32767) {
-            mov = -(65534 - mov);
+
+          for (let i = 0; i < 9; i++) {
+            let mov = (arr[2 * i + 3] & 0xFF) << 8 | arr[2 * i + 2] & 0xFF;
+            if (mov > 32767) {
+              mov = -(65534 - mov);
+            }
+            if (i == 0) {
+              accX = mov;
+              accX *= ratio_ACC;
+            } else if (i == 1) {
+              accY = mov;
+              accY *= ratio_ACC;
+            } else if (i == 2) {
+              accZ = mov;
+              accZ *= ratio_ACC;
+            } else if (i == 3) {
+              gyrX = mov;
+              gyrX *= ratio_GYR;
+            } else if (i == 4) {
+              gyrY = mov;
+              gyrY *= ratio_GYR;
+            } else if (i == 5) {
+              gyrZ = mov;
+              gyrZ *= ratio_GYR;
+            }
           }
-          if (i == 0) {
-            accX = mov;
-            accX *= ratio_ACC;
-          } else if (i == 1) {
-            accY = mov;
-            accY *= ratio_ACC;
-          } else if (i == 2) {
-            accZ = mov;
-            accZ *= ratio_ACC;
-          } else if (i == 3) {
-            gyrX = mov;
-            gyrX *= ratio_GYR;
-          } else if (i == 4) {
-            gyrY = mov;
-            gyrY *= ratio_GYR;
-          } else if (i == 5) {
-            gyrZ = mov;
-            gyrZ *= ratio_GYR;
-          }
-        }
 
-        outputs[0] = nSample;
-        outputs[1] = accX * 9.8;
-        outputs[2] = accY * 9.8;
-        outputs[3] = accZ * 9.8;
-        outputs[4] = gyrX * Math.PI / 180;
-        outputs[5] = gyrY * Math.PI / 180;
-        outputs[6] = gyrZ * Math.PI / 180;
-        logger.write(peripheralAddress + ", " + outputs + "\n");
-        //console.log(peripheral.address, "Raw: " + Array.prototype.slice.call(data, 0))
+          outputs[0] = nSample;
+          outputs[1] = accX * 9.8;
+          outputs[2] = accY * 9.8;
+          outputs[3] = accZ * 9.8;
+          outputs[4] = gyrX * Math.PI / 180;
+          outputs[5] = gyrY * Math.PI / 180;
+          outputs[6] = gyrZ * Math.PI / 180;
+          logger.write(peripheralAddress + ", " + outputs + "\n");
+          //console.log(peripheral.address, "Raw: " + Array.prototype.slice.call(data, 0))
+        });
       });
-    });
-  })
+    })
+  }
 }
 
 function idle(peripheralAddress) {
@@ -206,7 +208,7 @@ noble.on('discover', function (peripheral) {
 
     peripheral.once('disconnect', function () {
       console.log(address, 'disconnected');
-      peripherals = peripherals.filter(p => {return p.address !== peripheral.address})
+      peripherals = peripherals.filter(p => { return p.address !== peripheral.address })
     });
 
     peripheral.connect(function (error) {
