@@ -32,6 +32,13 @@ app.post('/startAllRaw', function (req, res) {
     res.send()
 })
 
+app.post('/stopAllRaw', function (req, res) {
+    ble.getPeripherals().map(p => p.address).forEach(element => {
+        ble.idle(element)
+    });
+    res.send()
+})
+
 app.post('/shutdownAll', function (req, res) {
     ble.getPeripherals().map(p => p.address).forEach(element => {
         ble.shutdown(element)
