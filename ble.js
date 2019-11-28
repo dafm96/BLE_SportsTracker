@@ -6,7 +6,7 @@ var logger = fs.createWriteStream('log.txt', {
     flags: 'a' // 'a' means appending (old data will be preserved)
 })
 
-
+var fullList = []
 var peripherals = [];
 var whitelist = ['0C:B2:B7:39:97:B0',
     '20:C3:8F:D1:07:38',
@@ -26,7 +26,7 @@ function bufferToByteArray(buffer) {
 }
 
 function getPeripherals() {
-    return peripherals;
+    return fullList;
 }
 
 function MPUConfig(peripheralAddress) {
@@ -63,6 +63,7 @@ function changeRate(peripheralAddress, rateMs) {
 
 function startRaw(peripheralAddress) {
     let peripheral = peripherals.find(p => p.address === peripheralAddress)
+    let rep = fullList.find((p => p.address === peripheralAddress))
     if (peripheral) {
         peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35', 'ff38'], function(error, services, characteristics) {
             var SmartLifeService = services[0];
@@ -71,7 +72,7 @@ function startRaw(peripheralAddress) {
 
             stateCharacteristic.write(new Buffer([0x01]), true, function(error) {
                 console.log('Started RAW');
-
+                rep.startedRaw = true;
                 // to enable notify
                 rawCharacteristic.subscribe(function(error) {
                     console.log('raw notification on');
@@ -135,6 +136,7 @@ function startRaw(peripheralAddress) {
 
 function idle(peripheralAddress) {
     let peripheral = peripherals.find(p => p.address === peripheralAddress)
+    let rep = fullList.find((p => p.address === peripheralAddress))
     if (peripheral) {
         peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35', 'ff38'], function(error, services, characteristics) {
             var SmartLifeService = services[0];
@@ -143,6 +145,7 @@ function idle(peripheralAddress) {
 
             stateCharacteristic.write(new Buffer([0x00]), true, function(error) {
                 console.log('Stopped RAW');
+                rep.startedRaw = false;
                 rawCharacteristic.unsubscribe((error) => {
                     if (error) {
                         console.log("idle " + error)
@@ -191,6 +194,11 @@ noble.on('discover', function(peripheral) {
 
         peripheral.once('connect', function() {
             console.log(address, 'connected');
+            fullList.push({
+                address: peripheral.address,
+                connected: true,
+                startedRaw: false
+            })
             peripherals.push(peripheral);
             MPUConfig(address)
             peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35', 'ff37'], function(error, services, characteristics) {
@@ -207,6 +215,7 @@ noble.on('discover', function(peripheral) {
         peripheral.once('disconnect', function() {
             console.log(address, 'disconnected');
             peripherals = peripherals.filter(p => { return p.address !== peripheral.address })
+            fullList = fullList.filter(p => { return p.address !== peripheral.address })
         });
 
         peripheral.connect(function(error) {
