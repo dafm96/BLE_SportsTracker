@@ -17,7 +17,8 @@ var whitelist = ['0C:B2:B7:39:97:B0',
     '0C:B2:B7:39:92:EA',
     '0C:B2:B7:39:99:13',
     '0C:B2:B7:39:9A:80',
-    '0C:B2:B7:39:99:65'
+    // '0C:B2:B7:39:99:65',
+    '0C:B2:B7:39:9D:5D'
 ]
 
 function bufferToByteArray(buffer) {
