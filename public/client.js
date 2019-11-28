@@ -22,7 +22,7 @@ resetButton.addEventListener('click', function(e) {
         .then(res => {
             console.log(res)
             document.getElementById('deviceList').innerHTML = ""; // <-- Clears the gif-btn div
-            document.getElementById('deviceList').appendChild(makeUL(res.peripherals));
+            document.getElementById('deviceList').appendChild(makeUL(res.peripherals.map(p => p.address)));
         })
         .catch(err => console.log(err));
 

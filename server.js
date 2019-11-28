@@ -6,7 +6,7 @@ app.use(express.json());
 app.use(express.static('public')); //Send index.html page on GET /
 
 app.get('/peripherals', function(req, res) {
-    res.send({ peripherals: ble.getPeripherals().map(p => p.address) })
+    res.send({ peripherals: ble.getPeripherals() })
 })
 
 app.get('/peripherals/:peripheralAddress', function(req, res) {
