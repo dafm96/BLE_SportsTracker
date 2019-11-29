@@ -73,10 +73,6 @@ function startRaw(peripheralAddress) {
             stateCharacteristic.write(new Buffer([0x01]), true, function(error) {
                 console.log('Started RAW');
                 rep.startedRaw = true;
-                // to enable notify
-                rawCharacteristic.subscribe(function(error) {
-                    console.log('raw notification on');
-                });
 
                 rawCharacteristic.on('data', function(data, isNotification) {
                     let outputs = [];
@@ -146,11 +142,11 @@ function idle(peripheralAddress) {
             stateCharacteristic.write(new Buffer([0x00]), true, function(error) {
                 console.log('Stopped RAW');
                 rep.startedRaw = false;
-                rawCharacteristic.unsubscribe((error) => {
-                    if (error) {
-                        console.log("idle " + error)
-                    }
-                })
+                // rawCharacteristic.unsubscribe((error) => {
+                //     if (error) {
+                //         console.log("idle " + error)
+                //     }
+                // })
             });
         })
     }
@@ -201,13 +197,31 @@ noble.on('discover', function(peripheral) {
             })
             peripherals.push(peripheral);
             MPUConfig(address)
-            peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35', 'ff37'], function(error, services, characteristics) {
+            peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35', 'ff37', 'ff38'], function(error, services, characteristics) {
                 var SmartLifeService = services[0];
                 var stateCharacteristic = characteristics.find(c => c.uuid == 'ff35');
                 var buttonCharacteristic = characteristics.find(c => c.uuid == 'ff37');
+                var rawCharacteristic = characteristics.find(c => c.uuid == 'ff38');
 
-                stateCharacteristic.on('data', function(data, isNotification) {})
-                buttonCharacteristic.on('data', function(data, isNotification) {})
+                // to enable notify
+                rawCharacteristic.subscribe(function(error) {
+                    console.log('raw notification on');
+                });
+
+                state.subscribe.subscribe(function(error) {
+                    console.log('state notification on');
+                });
+
+                buttonCharacteristic.subscribe(function(error) {
+                    console.log('button notification on');
+                });
+
+                stateCharacteristic.on('data', function(data, isNotification) {
+                    console.log(data)
+                })
+                buttonCharacteristic.on('data', function(data, isNotification) {
+                    console.log(data)
+                })
             })
         })
 
