@@ -173,7 +173,7 @@ class Peripherals extends React.Component {
   async componentDidMount() {
     setInterval(() => {
       this.updateInfoOnPeripherals()
-    }, 5000);
+    }, 2000);
   }
 
   renderTableData() {
