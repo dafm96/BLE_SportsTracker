@@ -2,7 +2,7 @@ var noble = require('noble');
 //change min and max in leconn located in /node_modules/noble/lib/hci-socket/hci.js
 
 var fs = require('fs')
-var logger = fs.createWriteStream('log.txt', {
+var logger = fs.createWriteStream('server/log.txt', {
     flags: 'a' // 'a' means appending (old data will be preserved)
 })
 
@@ -122,6 +122,7 @@ function startRaw(peripheralAddress) {
                     outputs[4] = gyrX * Math.PI / 180;
                     outputs[5] = gyrY * Math.PI / 180;
                     outputs[6] = gyrZ * Math.PI / 180;
+                    console.log(outputs)
                     logger.write(peripheralAddress + ", " + outputs + "\n");
                     //console.log(peripheral.address, "Raw: " + Array.prototype.slice.call(data, 0))
                 });
@@ -196,19 +197,36 @@ noble.on('discover', function(peripheral) {
                 startedRaw: false
             })
             peripherals.push(peripheral);
-            MPUConfig(address)
-            peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35', 'ff37', 'ff38'], function(error, services, characteristics) {
+            //MPUConfig(address)
+            peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35', 'ff37', 'ff38', 'ff3c', 'ff3b'], function(error, services, characteristics) {
                 var SmartLifeService = services[0];
                 var stateCharacteristic = characteristics.find(c => c.uuid == 'ff35');
                 var buttonCharacteristic = characteristics.find(c => c.uuid == 'ff37');
                 var rawCharacteristic = characteristics.find(c => c.uuid == 'ff38');
+                var MPUCharacteristic = characteristics.find(c => c.uuid == 'ff3c');
+                var RateCharacteristic = characteristics.find(c => c.uuid == 'ff3b');
+                MPUCharacteristic.write(new Buffer([0x07, 0x00, 0x00, 0x08, 0x03, 0x03, 0x10]), true, function(error) {
+                    if (error) {
+                        console.log(error)
+                    } else {
+                        console.log('Changed MPU config')
+                    }
+                })
+
+                RateCharacteristic.write(new Buffer([20]), true, function(error) {
+                    if (error) {
+                        console.log(error)
+                    } else {
+                        console.log('Changed rate to ' + 20 + 'ms')
+                    }
+                })
 
                 // to enable notify
                 rawCharacteristic.subscribe(function(error) {
                     console.log('raw notification on');
                 });
 
-                state.subscribe.subscribe(function(error) {
+                stateCharacteristic.subscribe(function(error) {
                     console.log('state notification on');
                 });
 
@@ -216,12 +234,15 @@ noble.on('discover', function(peripheral) {
                     console.log('button notification on');
                 });
 
-                stateCharacteristic.on('data', function(data, isNotification) {
-                    console.log(data)
-                })
-                buttonCharacteristic.on('data', function(data, isNotification) {
-                    console.log(data)
-                })
+                // stateCharacteristic.on('data', function(data, isNotification) {
+                //     console.log(data)
+                // })
+                // buttonCharacteristic.on('data', function(data, isNotification) {
+                //     console.log(data)
+                // })
+                // rawCharacteristic.on('data', function(data, isNotification) {
+                //     console.log(data)
+                // })
             })
         })
 
