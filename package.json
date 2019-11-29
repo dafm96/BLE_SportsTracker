@@ -4,7 +4,11 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cd server && node server.js",
+    "client": "cd client && npm start",
+    "server": "npm start",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "keywords": [],
   "author": "",
@@ -12,5 +16,8 @@
   "dependencies": {
     "express": "^4.17.1",
     "noble": "^1.9.1"
+  },
+  "devDependencies": {
+    "concurrently": "^5.0.0"
   }
 }

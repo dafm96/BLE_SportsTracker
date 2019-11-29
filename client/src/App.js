@@ -215,7 +215,7 @@ class Peripherals extends React.Component {
           <AllDevices startedRaw={this.state.startedRaw} />
           <table id='peripherals'>
             <tbody>
-              <tr>{this.renderTableHeader()}<th colSpan="2">OPERATIONS</th></tr>
+              <tr><th></th>{this.renderTableHeader()}<th colSpan="2">OPERATIONS</th></tr>
               {this.renderTableData()}
             </tbody>
           </table>
