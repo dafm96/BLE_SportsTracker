@@ -1,6 +1,8 @@
 var noble = require('noble');
 //change min and max in leconn located in /node_modules/noble/lib/hci-socket/hci.js
 
+var rawToAi = require('./rawToAi')
+
 var fs = require('fs')
 var logger = fs.createWriteStream('server/log.txt', {
     flags: 'a' // 'a' means appending (old data will be preserved)
@@ -27,6 +29,13 @@ function bufferToByteArray(buffer) {
 
 function getPeripherals() {
     return fullList;
+}
+
+function getPeripheral(peripheralAddress) {
+    let peripheral = fullList.find(p => p.address === peripheralAddress);
+    let activityTime = rawToAi.getActivityTime(peripheralAddress);
+    
+    return {peripheral, activityTime};
 }
 
 function MPUConfig(peripheralAddress) {
@@ -122,7 +131,7 @@ function startRaw(peripheralAddress) {
                     outputs[4] = gyrX * Math.PI / 180;
                     outputs[5] = gyrY * Math.PI / 180;
                     outputs[6] = gyrZ * Math.PI / 180;
-                    console.log(outputs)
+                    rawToAi.convertRawToActivity(peripheralAddress, [outputs[1], outputs[2], outputs[3]]);
                     logger.write(peripheralAddress + ", " + outputs + "\n");
                     //console.log(peripheral.address, "Raw: " + Array.prototype.slice.call(data, 0))
                 });
@@ -265,4 +274,4 @@ noble.on('discover', function(peripheral) {
     }
 })
 
-var exports = module.exports = { getPeripherals, startRaw, idle, shutdown };
+module.exports = { getPeripherals, getPeripheral, startRaw, idle, shutdown };
