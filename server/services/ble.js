@@ -4,7 +4,7 @@ var noble = require('noble');
 var rawToAi = require('./rawToAi')
 
 var fs = require('fs')
-var logger = fs.createWriteStream('server/log.txt', {
+var logger = fs.createWriteStream('./server/logs/log' + new Date().toISOString() +'.txt', {
     flags: 'a' // 'a' means appending (old data will be preserved)
 })
 

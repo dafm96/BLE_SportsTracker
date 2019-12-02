@@ -1,6 +1,6 @@
 const express = require('express');
 const router = new express.Router()
-const ble = require('../ble')
+const ble = require('../services/ble')
 
 router.get('/peripherals', function(req, res) {
     res.send({ peripherals: ble.getPeripherals() })
