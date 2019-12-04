@@ -1,7 +1,7 @@
 const express = require('express');
 const router = new express.Router()
 const ble = require('../services/ble')
-
+//TODO ADD Errors when no peripheralAddress is found
 router.get('/peripherals', function(req, res) {
     res.send({ peripherals: ble.getPeripherals() })
 })
@@ -59,6 +59,17 @@ router.post('/shutdownAll', function(req, res) {
     } else {
         res.status(400).send()
     }
+})
+
+router.get('/tracking', (req, res) => {
+    ble.tracking((error, data) => {
+        if (error) {
+            return res.status(400).send(error);
+        }
+        else {
+            return res.send(JSON.parse(data));
+        }
+    });
 })
 
 module.exports = router
