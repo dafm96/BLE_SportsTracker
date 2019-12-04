@@ -4,7 +4,7 @@ var noble = require('noble');
 var rawToAi = require('./rawToAi')
 
 var fs = require('fs')
-var logger = fs.createWriteStream('./logs/log' + new Date().toISOString() +'.txt', {
+var logger = fs.createWriteStream('./logs/log' + new Date().toISOString().slice(0,19) +'.csv', {
     flags: 'a' // 'a' means appending (old data will be preserved)
 })
 
@@ -131,8 +131,9 @@ function startRaw(peripheralAddress) {
                     outputs[4] = gyrX * Math.PI / 180;
                     outputs[5] = gyrY * Math.PI / 180;
                     outputs[6] = gyrZ * Math.PI / 180;
+                    let s = "" + outputs;
                     rawToAi.convertRawToActivity(peripheralAddress, [outputs[1], outputs[2], outputs[3]]);
-                    logger.write(peripheralAddress + ", " + outputs + "\n");
+                    logger.write("" + s.replace(/,/gi, ';') + ";" + peripheralAddress + "\n");
                     //console.log(peripheral.address, "Raw: " + Array.prototype.slice.call(data, 0))
                 });
             });
