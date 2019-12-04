@@ -16,7 +16,6 @@
 clear all;
 
 args = argv();
-%printf("args = %s\n", args{1});
 %./server/logs/log2019-12-04T11:13:07.csv
 data = importdata(args{1});
 gyro_bias = [-0.1651  0.0901  0.0347]'; %//TODO gyroBias from args
@@ -170,9 +169,6 @@ for t = 2:data_size
 end
 
 %% Rotate position estimates and plot.
-figure;
-box on;
-hold on;
 angle = 180; % Rotation angle required to achieve an aesthetic alignment of the figure.
 rotation_matrix = [cosd(angle) -sind(angle);
     sind(angle) cosd(angle)];
@@ -180,87 +176,11 @@ pos_r = zeros(2,data_size);
 for idx = 1:data_size
     pos_r(:,idx) = rotation_matrix*[pos_n(1,idx) pos_n(2,idx)]';
 end
-plot(pos_r(1,:),pos_r(2,:),'LineWidth',2,'Color','r');
-start = plot(pos_r(1,1),pos_r(2,1),'Marker','^','LineWidth',2,'LineStyle','none');
-stop = plot(pos_r(1,end),pos_r(2,end),'Marker','o','LineWidth',2,'LineStyle','none');
-
-xlabel('x (m)');
-ylabel('y (m)');
-title_str = ["Estimated 2D path; Distance: " num2str(distance(1, data_size-1))];
-title(title_str);
-legend([start;stop],'Start','End');
-axis equal;
-grid;
-hold off;
-
-% figure;
-% box on;
-% hold on;
-% pkg load statistics;
-% X = pos_r';
-% %colormap ("jet");
-% hist3(X);
-% hold off;
-
-out = [walking', pos_r'];
-#disp(out)
-save pos.txt out;
-
-%% Plot altitude estimates.
-figure;
-box on;
-hold on;
-plot(distance,pos_n(3,:),'Linewidth',2, 'Color','b');
-xlabel('Distance Travelled (m)');
-ylabel('z (m)');
-title('Estimated altitude');
-grid;
-
-% Display lines representing true altitudes of each floor.
-floor_colour = [0 0.5 0]; % Colour for lines representing floors.
-floor_heights = [0 3.6 7.2 10.8]; % Altitude of each floor measured from the ground floor.
-floor_names = {'A' 'B' 'C' 'D'};
-lim = xlim;
-for floor_idx = 1:length(floor_heights)
-    line(lim, [floor_heights(floor_idx) floor_heights(floor_idx)], 'LineWidth', 2, 'LineStyle', '--', 'Color', floor_colour);
-end
-ax1=gca; % Save handle to main axes.
-axes('YAxisLocation','right','Color','none','YTickLabel', floor_names, 'YTick', floor_heights,'XTickLabel', {});
-ylim(ylim(ax1));
-ylabel('Floor');
-hold off;
 
 steps = 0;
 no_ones = 0;
 no_zeros = 0;
 last = 0;
-
-%% Algorithm to identify steps in zeros %%
-%for idx = 1:data_size
-%    current = walking(idx);
-%    if (last == 0 && current == 1)
-%        no_zeros = 0;
-%        no_ones++;
-%    elseif (last == 1 && current == 1)
-%        no_zeros = 0;
-%        no_ones++;
-%    elseif (last == 1 && current == 0)
-%        no_ones = 0;
-%        no_zeros++;
-%    elseif (last == 0 && current == 0)
-%        no_ones = 0;
-%        no_zeros++;
-%        if(no_zeros == 6)
-%            no_ones = 0;
-%            steps++;
-%            printf("step: idx %d\n", idx);
-%        endif
-%    endif
-%    printf("%d %d : %d %d\n", last, current, no_zeros, no_ones);
-%
-%    last = current;
-%endfor
-
 %% Algorithm to identify steps in ones %%
 for idx = 1:data_size
     current = walking(idx);
@@ -272,7 +192,7 @@ for idx = 1:data_size
         if (no_ones == 12)
             no_zeros = 0;
             steps++;
-            %printf("step: idx %d\n", idx);
+            printf("step: idx %d\n", idx);
         endif
     elseif (last == 1 && current == 0)
         no_zeros++;
@@ -284,14 +204,13 @@ for idx = 1:data_size
     %printf("%d %d : %d %d\n", last, current, no_zeros, no_ones);
     last = current;
 endfor
+out = [pos_r(1,:); pos_r(2,:); walking(:)'; distance(:)']';
+printf('{"data": [');
 
-title_str = ["Walking; Steps: " num2str(steps)];
-figure;
-box on;
-hold on;
-plot(walking);
-title(title_str);
-grid;
-hold off;
+for idx = 1:data_size-1
+    printf('[{"X": "%i", "Y":"%i", "Walking":"%i", "Distance":"%i"}],\n', out(idx, :)');
+endfor
 
-waitfor(gcf);
+printf('[{"X": "%i", "Y":"%i", "Walking":"%i", "Distance":"%i"}]],\n', out(data_size, :)');
+
+printf('"steps": "%d"}\n', steps);
