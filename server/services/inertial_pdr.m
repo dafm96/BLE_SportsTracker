@@ -15,107 +15,12 @@
 
 clear all;
 
-%% Read data from file.
-% Data should include timestamps (seconds), 3 axis accelerations (m/s^2), 3
-% axis gyroscopic rates of turn (rad/s).
-%data = importdata('l.csv'); gyro_bias = [0.1738  -0.0794   -0.0213]';
-%data = importdata('2.csv'); gyro_bias = [0.0066  -0.0071   0.0120]';
-%data = importdata('3.csv'); gyro_bias = [0.0066  -0.0071   0.0235]';
-%data = importdata('4.csv'); gyro_bias = [0.0066  -0.0071   0.025]';
-%data = importdata('running.csv'); %gyro_bias = [0.0386  -0.0488   -0.00]';
-%data = importdata('./wifi/out2019-09-27T15-23-00.059Z_2.csv'); gyro_bias = [-0.000082013 -0.000085558 0.00035855]';
-%data = importdata('./wifi/wifi_50ms_L.csv'); gyro_bias = [-0.03159642121 -0.02312116725 0.00916183636]';
-%s = [0.009526407	0.005816604	0.000457262]';
-%data = importdata('./wifi/WIFI_20ms_U_2sensores.csv'); gyro_bias = [0.009526407	0.005816604	0.000457262]';
-%data = importdata('s_reto_parque_20ms_71.csv'); gyro_bias = [0.1444  -0.3054  -0.0448]';
-%acc_bias = [-0.1622 -1.6558 0]';
-%data = importdata('2devices_s_esq.csv'); gyro_bias = [0.213 -0.041  -0.022]'; %%esq
-%24/05/2019
-%s parque, dir meia, esq atacador
-%data = importdata('2devices_s_dir_50ms_74.csv'); gyro_bias = [0.2036  -0.1460  0.0118]'; %%dir 
-%data = importdata('2devices_s_esq_50ms_71.csv'); gyro_bias = [0.1444  -0.3054  -0.0448]'; %esq
-%data = importdata('testdist_50ms_74.csv'); gyro_bias = [0.2036  -0.1460  0.0118]'; %%dir 
-
-%9/10/2019
-%data = importdata('74_20ms_U_1.csv'); gyro_bias = [0.2091  -0.1451  0.0132]';
-%data = importdata('71_20ms_U_1.csv'); gyro_bias = [0.1437  -0.3013  0.0402]';
-%data = importdata('74_20ms_parado.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-0.821395251	-2.058536774	9.582323369]';
-%data = importdata('74_20ms_U_2.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-0.821395251	-2.058536774	0.0]';
-%data = importdata('74_20ms_SCorredor.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-0.8444	-2.0007	0.0]';
-%2_devices_U_74_76
-%data = importdata('2Devices_74_20ms_U_1.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-%data = importdata('2Devices_76_20ms_U_1.csv'); gyro_bias = [-0.1651  0.0901  0.0347]'; acc_bias = [-1.238060718 -2.244322452 0.0]';
-
-
-%10/10/2019
-%data = importdata('74_20ms_6metros.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-%data = importdata('Linha_reta_6m_right_20ms_74.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-%data = importdata('Linha_reta_12m_right_20ms_74.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-%data = importdata('Linha_reta_18m_right_20ms_74.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-
-%data = importdata('Linha_reta_6m_left_20ms_74.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-%data = importdata('Linha_reta_12m_left_20ms_74.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-%data = importdata('Linha_reta_18m_left_20ms_74.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-
-%data = importdata('Linha_reta_6m_right_20ms_74_PEDRO.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-%data = importdata('Linha_reta_12m_right_20ms_74_PEDRO.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-%data = importdata('Linha_reta_18m_right_20ms_74_PEDRO.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-%data = importdata('Linha_reta_12m_right_20ms_74_PEDRO_corrida_lenta.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-%data = importdata('Linha_reta_12m_right_20ms_74_PEDRO_corrida_rapida.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-
-%11/10/2019 - 2 p�s 18m
-%data = importdata('2pes_right_74_20ms_18m.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-%data = importdata('2pes_left_76_20ms_18m.csv'); gyro_bias = [-0.1651  0.0901  0.0347]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-
-
-%16/10/2019
-%%% Linha Reta %%%
-%data = importdata('./dados 16-10/Linha_reta_74_20ms_5passos.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-%data = importdata('./dados 16-10/Linha_reta_74_20ms_10passos.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-%data = importdata('./dados 16-10/Linha_reta_74_20ms_15passos.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-%data = importdata('./dados 16-10/Linha_reta_74_20ms_20passos.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-
-%%% L %%%
-%data = importdata('./dados 16-10/L_74_20ms_2x2.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-%data = importdata('./dados 16-10/L_74_20ms_4x4.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-%data = importdata('./dados 16-10/L_74_20ms_6x5.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-
-%%% U %%%
-%data = importdata('./dados 16-10/U_74_20ms_2x2x2.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-%data = importdata('./dados 16-10/U_74_20ms_4x4x4.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-
-%%% Jogging %%%
-%data = importdata('./dados 16-10/Jogging_reta_74_20ms_10passos.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-%data = importdata('./dados 16-10/Jogging_reta_74_20ms_20passos.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-
-%%% 1 2 e 3 passos %%%
-%data = importdata('74_20ms_1passo_60cm.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-%data = importdata('74_20ms_2passos_120cm.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-%data = importdata('74_20ms_2passos_180cm.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-
-%%% Caracol 18-10 %%%
-%data = importdata('caracol_74_20ms_18-10.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-%data = importdata('caracol2_74_20ms_18-10.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-
-%%% caracol com corrida 21-10 %%%
-%data = importdata('74_20ms_caracol_corrida.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-%%% parque andar/andar-correr 21-10 %%%
-%data = importdata('21_10-74_20ms_parque_andar.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-%data = importdata('21_10-74_20ms_parque_andar-correr.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-
-
-%%% caracol pe e lombar 24-10 %%%
-%data = importdata('pe74_caracol_pe_lombar_direitavolver74_76_20ms.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-%data = importdata('lombar76_caracol_pe_lombar_direitavolver74_76_20ms.csv'); gyro_bias = [-0.1651  0.0901  0.0347]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-%data = importdata('pe74_caracol_pe_lombar_curvo_74_76_20ms.csv'); gyro_bias = [0.2091  -0.1451  0.0132]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-%data = importdata('lombar76_caracol_pe_lombar_curvo_74_76_20ms.csv'); gyro_bias = [-0.1651  0.0901  0.0347]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-
-%%% calibração 28-10 %%%
-%data = importdata('acc_calibration_20_passos_74_20ms.csv'); gyro_bias = [-0.1651  0.0901  0.0347]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
-
-
-%%% teste RaspberryPi %%%
-data = importdata('log2019-12-04.csv'); gyro_bias = [-0.1651  0.0901  0.0347]'; acc_bias = [-2.173371994 -2.758917363 0.0]';
+args = argv();
+%printf("args = %s\n", args{1});
+%./server/logs/log2019-12-04T11:13:07.csv
+data = importdata(args{1});
+gyro_bias = [-0.1651  0.0901  0.0347]'; %//TODO gyroBias from args
+acc_bias = [-2.173371994 -2.758917363 0.0]'; %//TODO accBias from args
 
 data_size = length(data);
 timestamp = data(:,1)'; % Timestamps of measurements.
