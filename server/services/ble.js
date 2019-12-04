@@ -4,7 +4,8 @@ var noble = require('noble');
 var rawToAi = require('./rawToAi')
 
 var fs = require('fs')
-var logger = fs.createWriteStream('./logs/log' + new Date().toISOString().slice(0,19) +'.csv', {
+let filename = 'log' + new Date().toISOString().slice(0,19) +'.csv';
+var logger = fs.createWriteStream('./logs/' + filename, {
     flags: 'a' // 'a' means appending (old data will be preserved)
 })
 
@@ -275,4 +276,33 @@ noble.on('discover', function(peripheral) {
     }
 })
 
-module.exports = { getPeripherals, getPeripheral, startRaw, idle, shutdown };
+function tracking(callback) {
+    //TODO grab device/player and session?
+    let out = '';
+    let error = false;
+    var spawn = require('child_process').spawn,
+        ls = spawn('octave', ['./services/inertial_pdr.m',
+            './logs/' + filename
+        ]);
+
+    ls.stdout.on('data', function (data) {
+        out += data.toString();
+    });
+
+    ls.stderr.on('data', function (data) {
+        console.log('stderr: ' + data.toString());
+        error = true;
+    });
+
+    ls.on('exit', function (code) {
+        console.log('child process exited with code ' + code.toString());
+        if (error || out == '') {
+            return callback("Error in tracking algorithm");
+        }
+        else {
+            return callback(null, out);
+        }
+    });
+}
+
+module.exports = { getPeripherals, getPeripheral, startRaw, idle, shutdown, tracking };
