@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import Plot from 'react-plotly.js';
 
 class ShutdownButton extends React.Component {
   render() {
@@ -115,7 +116,7 @@ class PeripheralRow extends React.Component {
         .then(
           this.setState({
             connected: !this.props.connected
-            
+
           })
         )
     }
@@ -230,11 +231,62 @@ class Peripherals extends React.Component {
   }
 }
 
+class PlotComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { data: [], layout: { width: 0, height: 0 } };
+    this.updateHandler = this.updateHandler.bind(this)
+  }
+
+  updateHandler() {
+    const that = this;
+    fetch("/tracking")
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (jsonData) {
+        console.log(jsonData);
+        that.setState({
+          data: [{
+            x: jsonData.data.map(d => d.X),
+            y: jsonData.data.map(d => d.Y),
+            type: 'scatter',
+            mode: 'lines',
+            marker: { color: 'red' }
+          }],
+          layout: { width: "100%", height: "100%" }
+        });
+      })
+      .catch((e) => {
+        let newState = { peripherals: '' };
+        that.setState(newState);
+        console.log('No connection to server.')
+      })
+  }
+
+
+  render() {
+    return (
+      <>
+      <StartButton handler={this.updateHandler} text={"Update"} />
+      <div style={{ textAlign: 'center' }} >
+        <Plot
+          data={this.state.data}
+          layout={this.state.layout}
+        />
+      </div>
+      </>
+    );
+  }
+}
+
 function App() {
   return (
     <div>
       <h1 id='title'>BLE Sports Tracker</h1>
       <Peripherals />
+      <br/>
+      <PlotComponent />
     </div>
   );
 }
