@@ -32,7 +32,7 @@ p {
 
 /* Style buttons */
 
-.btn {
+.buttons .btn {
     color: black;
     border: none;
     /* Remove borders */
@@ -47,7 +47,7 @@ p {
 
 /* Darker background on mouse-over */
 
-.btn:hover {
+.buttons .btn:hover {
     background-color: rgba(0, 0, 0, 0.05);
 }
 
@@ -58,6 +58,10 @@ p {
 }
 
 #dataCollecting {
+    display: none;
+}
+
+#dataCollectingPlot {
     display: none;
 }
 
@@ -82,4 +86,46 @@ p {
     100% {
         transform: rotate(360deg);
     }
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+  }
+  
+  nav li {
+    float: left;
+  }
+  
+  nav li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none !important;
+  }
+
+  nav li a:hover{
+      color: white;
+  }
+  
+  nav li a:hover:not(.active) {
+    background-color: #111;
+  }
+  
+  nav .active {
+    background-color: #4CAF50;
+  }
+
+#update {
+    width: 100%;
+}
+
+#fetchData {
+    position: relative;
+    text-align: center;
+    margin: 1% auto;
 }
