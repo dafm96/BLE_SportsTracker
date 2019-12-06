@@ -125,7 +125,7 @@ function startRaw(peripheralAddress) {
                         }
                     }
 
-                    outputs[0] = nSample;
+                    outputs[0] = nSample * 0.02;
                     outputs[1] = accX * 9.8;
                     outputs[2] = accY * 9.8;
                     outputs[3] = accZ * 9.8;
