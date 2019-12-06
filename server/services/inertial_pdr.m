@@ -204,13 +204,13 @@ for idx = 1:data_size
     %printf("%d %d : %d %d\n", last, current, no_zeros, no_ones);
     last = current;
 endfor
-out = [pos_r(1,:); pos_r(2,:); walking(:)'; distance(:)']';
+out = [pos_r(1,:); pos_r(2,:); walking(:)']';
 printf('{"data": [');
 
 for idx = 1:data_size-1
-    printf('{"X": "%i", "Y":"%i", "Walking":"%i", "Distance":"%i"},\n', out(idx, :)');
+    printf('{"X": "%i", "Y":"%i", "Walking":"%i"},\n', out(idx, :)');
 endfor
 
-printf('{"X": "%i", "Y":"%i", "Walking":"%i", "Distance":"%i"}],\n', out(data_size, :)');
+printf('{"X": "%i", "Y":"%i", "Walking":"%i"}],\n', out(data_size, :)');
 
-printf('"steps": "%d"}\n', steps);
+printf('"Steps": "%d","Distance":"%i"}\n', steps, distance(data_size));
