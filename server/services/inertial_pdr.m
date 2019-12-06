@@ -192,7 +192,7 @@ for idx = 1:data_size
         if (no_ones == 12)
             no_zeros = 0;
             steps++;
-            printf("step: idx %d\n", idx);
+            %printf("step: idx %d\n", idx);
         endif
     elseif (last == 1 && current == 0)
         no_zeros++;
@@ -208,9 +208,9 @@ out = [pos_r(1,:); pos_r(2,:); walking(:)'; distance(:)']';
 printf('{"data": [');
 
 for idx = 1:data_size-1
-    printf('[{"X": "%i", "Y":"%i", "Walking":"%i", "Distance":"%i"}],\n', out(idx, :)');
+    printf('{"X": "%i", "Y":"%i", "Walking":"%i", "Distance":"%i"},\n', out(idx, :)');
 endfor
 
-printf('[{"X": "%i", "Y":"%i", "Walking":"%i", "Distance":"%i"}]],\n', out(data_size, :)');
+printf('{"X": "%i", "Y":"%i", "Walking":"%i", "Distance":"%i"}],\n', out(data_size, :)');
 
 printf('"steps": "%d"}\n', steps);
