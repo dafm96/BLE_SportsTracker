@@ -280,6 +280,7 @@ function tracking(callback) {
     //TODO grab device/player and session?
     let out = '';
     let error = false;
+    //TODO instead of saving the raw data to file, save to DB
     var spawn = require('child_process').spawn,
         ls = spawn('octave', ['./services/inertial_pdr.m',
             './logs/' + filename
@@ -291,7 +292,8 @@ function tracking(callback) {
 
     ls.stderr.on('data', function (data) {
         console.log('stderr: ' + data.toString());
-        error = true;
+        if(data.toString().includes('error'))
+            error = true;
     });
 
     ls.on('exit', function (code) {
@@ -300,9 +302,25 @@ function tracking(callback) {
             return callback("Error in tracking algorithm");
         }
         else {
-            return callback(null, out);
+            if (IsJsonString(out)) {
+                return callback(null, out);
+            }
+            else {
+                return callback("Error in tracking algorithm(data)");
+
+            }
         }
     });
+}
+
+function IsJsonString(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        console.log(e);
+        return false;
+    }
+    return true;
 }
 
 module.exports = { getPeripherals, getPeripheral, startRaw, idle, shutdown, tracking };
