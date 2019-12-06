@@ -302,7 +302,7 @@ function tracking(callback) {
             return callback("Error in tracking algorithm");
         }
         else {
-            if (IsJsonString(out)) {
+            if (!IsJsonString(out)) {
                 return callback(null, out);
             }
             else {
