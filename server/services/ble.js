@@ -4,7 +4,7 @@ var noble = require('noble');
 var rawToAi = require('./rawToAi')
 
 var fs = require('fs')
-let filename = 'log' + new Date().toISOString().slice(0,19) +'.csv';
+let filename = 'log' + new Date().toISOString().slice(0, 19) + '.csv';
 var logger = fs.createWriteStream('./logs/' + filename, {
     flags: 'a' // 'a' means appending (old data will be preserved)
 })
@@ -35,16 +35,16 @@ function getPeripherals() {
 function getPeripheral(peripheralAddress) {
     let peripheral = fullList.find(p => p.address === peripheralAddress);
     let activityTime = rawToAi.getActivityTime(peripheralAddress);
-    
-    return {peripheral, activityTime};
+
+    return { peripheral, activityTime };
 }
 
 function MPUConfig(peripheralAddress) {
     let peripheral = peripherals.find(p => p.address === peripheralAddress)
     if (peripheral) {
-        peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff3c'], function(error, services, characteristics) {
+        peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff3c'], function (error, services, characteristics) {
             var MPUCharacteristic = characteristics.find(c => c.uuid == 'ff3c');
-            MPUCharacteristic.write(new Buffer([0x07, 0x00, 0x00, 0x08, 0x03, 0x03, 0x10]), true, function(error) {
+            MPUCharacteristic.write(new Buffer([0x07, 0x00, 0x00, 0x08, 0x03, 0x03, 0x10]), true, function (error) {
                 if (error) {
                     console.log(error)
                 } else {
@@ -58,9 +58,9 @@ function MPUConfig(peripheralAddress) {
 function changeRate(peripheralAddress, rateMs) {
     let peripheral = peripherals.find(p => p.address === peripheralAddress)
     if (peripheral) {
-        peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff3b'], function(error, services, characteristics) {
+        peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff3b'], function (error, services, characteristics) {
             var RateCharacteristic = characteristics.find(c => c.uuid == 'ff3b');
-            RateCharacteristic.write(new Buffer([rateMs]), true, function(error) {
+            RateCharacteristic.write(new Buffer([rateMs]), true, function (error) {
                 if (error) {
                     console.log(error)
                 } else {
@@ -75,16 +75,16 @@ function startRaw(peripheralAddress) {
     let peripheral = peripherals.find(p => p.address === peripheralAddress)
     let rep = fullList.find((p => p.address === peripheralAddress))
     if (peripheral) {
-        peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35', 'ff38'], function(error, services, characteristics) {
+        peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35', 'ff38'], function (error, services, characteristics) {
             var SmartLifeService = services[0];
             var stateCharacteristic = characteristics.find(c => c.uuid == 'ff35');
             var rawCharacteristic = characteristics.find(c => c.uuid == 'ff38');
 
-            stateCharacteristic.write(new Buffer([0x01]), true, function(error) {
+            stateCharacteristic.write(new Buffer([0x01]), true, function (error) {
                 console.log('Started RAW');
                 rep.startedRaw = true;
 
-                rawCharacteristic.on('data', function(data, isNotification) {
+                rawCharacteristic.on('data', function (data, isNotification) {
                     let outputs = [];
                     let arr = Array.prototype.slice.call(data, 0)
                     let ratio_ACC = (4.0 / 32767); //originally 4.0
@@ -135,7 +135,7 @@ function startRaw(peripheralAddress) {
                     let s = "" + outputs;
                     rawToAi.convertRawToActivity(peripheralAddress, [outputs[1], outputs[2], outputs[3]]);
                     logger.write("" + s.replace(/,/gi, ';') + ";" + peripheralAddress + "\n");
-                    //console.log(peripheral.address, "Raw: " + Array.prototype.slice.call(data, 0))
+                    console.log(peripheral.address, "Raw: " + Array.prototype.slice.call(data, 0))
                 });
             });
         })
@@ -146,12 +146,12 @@ function idle(peripheralAddress) {
     let peripheral = peripherals.find(p => p.address === peripheralAddress)
     let rep = fullList.find((p => p.address === peripheralAddress))
     if (peripheral) {
-        peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35', 'ff38'], function(error, services, characteristics) {
+        peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35', 'ff38'], function (error, services, characteristics) {
             var SmartLifeService = services[0];
             var stateCharacteristic = characteristics.find(c => c.uuid == 'ff35');
             var rawCharacteristic = characteristics.find(c => c.uuid == 'ff38');
 
-            stateCharacteristic.write(new Buffer([0x00]), true, function(error) {
+            stateCharacteristic.write(new Buffer([0x00]), true, function (error) {
                 console.log('Stopped RAW');
                 rep.startedRaw = false;
                 // rawCharacteristic.unsubscribe((error) => {
@@ -167,18 +167,18 @@ function idle(peripheralAddress) {
 function shutdown(peripheralAddress) {
     let peripheral = peripherals.find(p => p.address === peripheralAddress)
     if (peripheral) {
-        peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35'], function(error, services, characteristics) {
+        peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35'], function (error, services, characteristics) {
             var SmartLifeService = services[0];
             var stateCharacteristic = characteristics.find(c => c.uuid == 'ff35');
 
-            stateCharacteristic.write(new Buffer([0x0A]), true, function(error) {
+            stateCharacteristic.write(new Buffer([0x0A]), true, function (error) {
                 console.log('Shutdown ' + peripheralAddress);
             });
         })
     }
 }
 
-noble.on('stateChange', function(state) {
+noble.on('stateChange', function (state) {
     if (state === 'poweredOn') {
         noble.startScanning();
     } else {
@@ -186,21 +186,21 @@ noble.on('stateChange', function(state) {
     }
 });
 
-noble.on('scanStart', function() {
+noble.on('scanStart', function () {
     console.warn('Scan started');
 });
 
-noble.on('scanStop', function() {
+noble.on('scanStop', function () {
     console.warn('Scan stopped');
 });
 
 
-noble.on('discover', function(peripheral) {
+noble.on('discover', function (peripheral) {
     var address = peripheral.address
     console.log(address)
     if (whitelist.includes(peripheral.address.toUpperCase()) && peripheral.state === 'disconnected') {
 
-        peripheral.once('connect', function() {
+        peripheral.once('connect', function () {
             console.log(address, 'connected');
             fullList.push({
                 address: peripheral.address,
@@ -209,14 +209,14 @@ noble.on('discover', function(peripheral) {
             })
             peripherals.push(peripheral);
             //MPUConfig(address)
-            peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35', 'ff37', 'ff38', 'ff3c', 'ff3b'], function(error, services, characteristics) {
+            peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35', 'ff37', 'ff38', 'ff3c', 'ff3b'], function (error, services, characteristics) {
                 var SmartLifeService = services[0];
                 var stateCharacteristic = characteristics.find(c => c.uuid == 'ff35');
                 var buttonCharacteristic = characteristics.find(c => c.uuid == 'ff37');
                 var rawCharacteristic = characteristics.find(c => c.uuid == 'ff38');
                 var MPUCharacteristic = characteristics.find(c => c.uuid == 'ff3c');
                 var RateCharacteristic = characteristics.find(c => c.uuid == 'ff3b');
-                MPUCharacteristic.write(new Buffer([0x07, 0x00, 0x00, 0x08, 0x03, 0x03, 0x10]), true, function(error) {
+                MPUCharacteristic.write(new Buffer([0x07, 0x00, 0x00, 0x08, 0x03, 0x03, 0x10]), true, function (error) {
                     if (error) {
                         console.log(error)
                     } else {
@@ -224,7 +224,7 @@ noble.on('discover', function(peripheral) {
                     }
                 })
 
-                RateCharacteristic.write(new Buffer([20]), true, function(error) {
+                RateCharacteristic.write(new Buffer([20]), true, function (error) {
                     if (error) {
                         console.log(error)
                     } else {
@@ -233,15 +233,15 @@ noble.on('discover', function(peripheral) {
                 })
 
                 // to enable notify
-                rawCharacteristic.subscribe(function(error) {
+                rawCharacteristic.subscribe(function (error) {
                     console.log('raw notification on');
                 });
 
-                stateCharacteristic.subscribe(function(error) {
+                stateCharacteristic.subscribe(function (error) {
                     console.log('state notification on');
                 });
 
-                buttonCharacteristic.subscribe(function(error) {
+                buttonCharacteristic.subscribe(function (error) {
                     console.log('button notification on');
                 });
 
@@ -258,13 +258,13 @@ noble.on('discover', function(peripheral) {
         })
 
 
-        peripheral.once('disconnect', function() {
+        peripheral.once('disconnect', function () {
             console.log(address, 'disconnected');
             peripherals = peripherals.filter(p => { return p.address !== peripheral.address })
             fullList = fullList.filter(p => { return p.address !== peripheral.address })
         });
 
-        peripheral.connect(function(error) {
+        peripheral.connect(function (error) {
             if (error) {
                 console.log(error);
             }
@@ -292,7 +292,7 @@ function tracking(callback) {
 
     ls.stderr.on('data', function (data) {
         console.log('stderr: ' + data.toString());
-        if(data.toString().includes('error'))
+        if (data.toString().includes('error'))
             error = true;
     });
 
