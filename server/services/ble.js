@@ -156,7 +156,7 @@ function startRaw(peripheralAddress) {
 }
 
 function convertToCSV(arr) {
-    const array = [Object.keys(arr[0], 'Device address')].concat(arr)
+    const array = [Object.keys(arr[0])].concat(arr)
 
     return array.map(it => {
         return Object.values(it).toString()
@@ -167,11 +167,9 @@ function idle(peripheralAddress) {
     let peripheral = peripherals.find(p => p.address === peripheralAddress)
     let rep = fullList.find((p => p.address === peripheralAddress))
     if (peripheral) {
-        peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35', 'ff38'], function (error, services, characteristics) {
+        peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35'], function (error, services, characteristics) {
             var SmartLifeService = services[0];
             var stateCharacteristic = characteristics.find(c => c.uuid == 'ff35');
-            var rawCharacteristic = characteristics.find(c => c.uuid == 'ff38');
-
             stateCharacteristic.write(new Buffer([0x00]), true, function (error) {
                 console.log('Stopped RAW');
                 rep.startedRaw = false;
@@ -181,6 +179,7 @@ function idle(peripheralAddress) {
                 })
                 //console.log(convertToCSV(rep.rawData))
                 logger.write("" + convertToCSV(rep.rawData).replace(/,/gi, ';') + "\n");
+                rep.rawData = [];
             });
         })
     }
@@ -306,7 +305,7 @@ function tracking(callback) {
     //TODO instead of saving the raw data to file, save to DB
     var spawn = require('child_process').spawn,
         ls = spawn('octave', ['./services/inertial_pdr.m',
-            './logs/' + filename
+            './logs/' + filename //TODO fix filename
         ]);
 
     ls.stdout.on('data', function (data) {
