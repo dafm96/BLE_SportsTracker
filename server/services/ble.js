@@ -4,10 +4,6 @@ var noble = require('noble');
 var rawToAi = require('./rawToAi')
 
 var fs = require('fs')
-let filename = 'log' + new Date().toISOString().slice(0, 19) + '.csv';
-var logger = fs.createWriteStream('./logs/' + filename, {
-    flags: 'a' // 'a' means appending (old data will be preserved)
-})
 
 var fullList = []
 var peripherals = [];
@@ -125,21 +121,46 @@ function startRaw(peripheralAddress) {
                         }
                     }
 
-                    outputs[0] = nSample * 0.02;
-                    outputs[1] = accX * 9.8;
-                    outputs[2] = accY * 9.8;
-                    outputs[3] = accZ * 9.8;
-                    outputs[4] = gyrX * Math.PI / 180;
-                    outputs[5] = gyrY * Math.PI / 180;
-                    outputs[6] = gyrZ * Math.PI / 180;
-                    let s = "" + outputs;
-                    rawToAi.convertRawToActivity(peripheralAddress, [outputs[1], outputs[2], outputs[3]]);
-                    logger.write("" + s.replace(/,/gi, ';') + ";" + peripheralAddress + "\n");
-                    console.log(peripheral.address, "Raw: " + Array.prototype.slice.call(data, 0))
+                    // outputs[0] = nSample * 0.02;
+                    // outputs[1] = accX * 9.8;
+                    // outputs[2] = accY * 9.8;
+                    // outputs[3] = accZ * 9.8;
+                    // outputs[4] = gyrX * Math.PI / 180;
+                    // outputs[5] = gyrY * Math.PI / 180;
+                    // outputs[6] = gyrZ * Math.PI / 180;
+                    // let s = "" + outputs;
+                    // let ai = rawToAi.convertRawToActivity(peripheralAddress, [outputs[1], outputs[2], outputs[3]]);
+                    // logger.write("" + s.replace(/,/gi, ';') + ";" + peripheralAddress + "\n");
+                    // console.log(peripheral.address, "Raw: " + Array.prototype.slice.call(data, 0))
+                    nSample = nSample * 0.02;
+                    accX = accX * 9.8;
+                    accY = accY * 9.8;
+                    accZ = accZ * 9.8;
+                    gyrX = gyrX * Math.PI / 180;
+                    gyrY = gyrY * Math.PI / 180;
+                    gyrZ = gyrZ * Math.PI / 180;
+                    let sample = {
+                        nSample,
+                        accX,
+                        accY,
+                        accZ,
+                        gyrX,
+                        gyrY,
+                        gyrZ
+                    };
+                    rep.rawData.push(sample);
                 });
             });
         })
     }
+}
+
+function convertToCSV(arr) {
+    const array = [Object.keys(arr[0], 'Device address')].concat(arr)
+
+    return array.map(it => {
+        return Object.values(it).toString()
+    }).join('\n')
 }
 
 function idle(peripheralAddress) {
@@ -154,11 +175,12 @@ function idle(peripheralAddress) {
             stateCharacteristic.write(new Buffer([0x00]), true, function (error) {
                 console.log('Stopped RAW');
                 rep.startedRaw = false;
-                // rawCharacteristic.unsubscribe((error) => {
-                //     if (error) {
-                //         console.log("idle " + error)
-                //     }
-                // })
+                let filename = 'log_' + new Date().toISOString().slice(0, 19) + '_' + rep.address + '.csv';
+                var logger = fs.createWriteStream('./logs/' + filename, {
+                    flags: 'a' // 'a' means appending (old data will be preserved)
+                })
+                //console.log(convertToCSV(rep.rawData))
+                logger.write("" + convertToCSV(rep.rawData).replace(/,/gi, ';') + "\n");
             });
         })
     }
@@ -205,7 +227,8 @@ noble.on('discover', function (peripheral) {
             fullList.push({
                 address: peripheral.address,
                 connected: true,
-                startedRaw: false
+                startedRaw: false,
+                rawData: []
             })
             peripherals.push(peripheral);
             //MPUConfig(address)
