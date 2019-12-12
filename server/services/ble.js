@@ -4,7 +4,10 @@ var noble = require('noble');
 //change min and max in leconn located in /node_modules/noble/lib/hci-socket/hci.js
 const matrix = require('sense-hat-led');
 var rawToAi = require('./rawToAi')
-matrix.clear([127, 127, 127]);
+matrix.clear([0, 0, 0]);
+const red = [255, 0, 0];
+const green = [0, 255, 0];
+const blue = [0, 0, 255];
 var fs = require('fs')
 
 var fullList = []
@@ -81,7 +84,7 @@ function startRaw(peripheralAddress) {
             stateCharacteristic.write(new Buffer([0x01]), true, function (error) {
                 console.log('Started RAW');
                 rep.startedRaw = true;
-                matrix.clear([0, 255, 0]);
+                matrix.setPixel(2, peripherals.indexOf(peripheral), green);
 
                 rawCharacteristic.on('data', function (data, isNotification) {
                     let outputs = [];
@@ -175,7 +178,7 @@ function idle(peripheralAddress) {
             var stateCharacteristic = characteristics.find(c => c.uuid == 'ff35');
             stateCharacteristic.write(new Buffer([0x00]), true, function (error) {
                 console.log('Stopped RAW');
-                matrix.clear([255, 0, 0]);
+                matrix.setPixel(2, peripherals.indexOf(peripheral), red);
                 rep.startedRaw = false;
                 let filename = 'log_' + new Date().toISOString().slice(0, 19) + '_' + rep.address + '.csv';
                 var logger = fs.createWriteStream('./logs/' + filename, {
@@ -234,6 +237,7 @@ noble.on('discover', function (peripheral) {
                 rawData: []
             })
             peripherals.push(peripheral);
+            matrix.setPixel(2, peripherals.indexOf(peripheral), blue);
             //MPUConfig(address)
             peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35', 'ff37', 'ff38', 'ff3c', 'ff3b'], function (error, services, characteristics) {
                 var SmartLifeService = services[0];
