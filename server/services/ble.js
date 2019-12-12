@@ -1,8 +1,8 @@
 var noble = require('noble');
 //change min and max in leconn located in /node_modules/noble/lib/hci-socket/hci.js
-
+const matrix = require('sense-hat-led');
 var rawToAi = require('./rawToAi')
-
+matrix.clear([127, 127, 127]);
 var fs = require('fs')
 
 var fullList = []
@@ -79,6 +79,7 @@ function startRaw(peripheralAddress) {
             stateCharacteristic.write(new Buffer([0x01]), true, function (error) {
                 console.log('Started RAW');
                 rep.startedRaw = true;
+                matrix.clear([0, 255, 0]);
 
                 rawCharacteristic.on('data', function (data, isNotification) {
                     let outputs = [];
@@ -172,6 +173,7 @@ function idle(peripheralAddress) {
             var stateCharacteristic = characteristics.find(c => c.uuid == 'ff35');
             stateCharacteristic.write(new Buffer([0x00]), true, function (error) {
                 console.log('Stopped RAW');
+                matrix.clear([255, 0, 0]);
                 rep.startedRaw = false;
                 let filename = 'log_' + new Date().toISOString().slice(0, 19) + '_' + rep.address + '.csv';
                 var logger = fs.createWriteStream('./logs/' + filename, {
