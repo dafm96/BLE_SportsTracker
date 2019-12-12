@@ -85,7 +85,7 @@ function startRaw(peripheralAddress) {
             stateCharacteristic.write(new Buffer([0x01]), true, function (error) {
                 console.log('Started RAW');
                 rep.startedRaw = true;
-                matrix.setPixel(rep.ledId % 8, 2 + ~~(re.ledId/8), green);
+                matrix.setPixel(rep.ledId % 8, 2 + ~~(rep.ledId/8), green);
 
                 rawCharacteristic.on('data', function (data, isNotification) {
                     let outputs = [];
@@ -179,7 +179,7 @@ function idle(peripheralAddress) {
             var stateCharacteristic = characteristics.find(c => c.uuid == 'ff35');
             stateCharacteristic.write(new Buffer([0x00]), true, function (error) {
                 console.log('Stopped RAW');
-                matrix.setPixel(rep.ledId % 8, 2 + ~~(re.ledId/8), red);
+                matrix.setPixel(rep.ledId % 8, 2 + ~~(rep.ledId/8), red);
                 rep.startedRaw = false;
                 let filename = 'log_' + new Date().toISOString().slice(0, 19) + '_' + rep.address + '.csv';
                 var logger = fs.createWriteStream('./logs/' + filename, {
