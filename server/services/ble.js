@@ -4,10 +4,11 @@ var noble = require('noble');
 //change min and max in leconn located in /node_modules/noble/lib/hci-socket/hci.js
 const matrix = require('sense-hat-led');
 var rawToAi = require('./rawToAi')
-matrix.clear([0, 0, 0]);
+const off = [0, 0, 0];
 const red = [255, 0, 0];
 const green = [0, 255, 0];
 const blue = [0, 0, 255];
+matrix.clear(off);
 var fs = require('fs')
 
 var fullList = []
@@ -290,6 +291,7 @@ noble.on('discover', function (peripheral) {
 
         peripheral.once('disconnect', function () {
             console.log(address, 'disconnected');
+            matrix.setPixel(peripherals.indexOf(peripheral), 2, off);
             peripherals = peripherals.filter(p => { return p.address !== peripheral.address })
             fullList = fullList.filter(p => { return p.address !== peripheral.address })
         });
