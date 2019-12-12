@@ -84,7 +84,7 @@ function startRaw(peripheralAddress) {
             stateCharacteristic.write(new Buffer([0x01]), true, function (error) {
                 console.log('Started RAW');
                 rep.startedRaw = true;
-                matrix.setPixel(2, peripherals.indexOf(peripheral), green);
+                matrix.setPixel(peripherals.indexOf(peripheral), 2, green);
 
                 rawCharacteristic.on('data', function (data, isNotification) {
                     let outputs = [];
@@ -178,7 +178,7 @@ function idle(peripheralAddress) {
             var stateCharacteristic = characteristics.find(c => c.uuid == 'ff35');
             stateCharacteristic.write(new Buffer([0x00]), true, function (error) {
                 console.log('Stopped RAW');
-                matrix.setPixel(2, peripherals.indexOf(peripheral), red);
+                matrix.setPixel(peripherals.indexOf(peripheral), 2, red);
                 rep.startedRaw = false;
                 let filename = 'log_' + new Date().toISOString().slice(0, 19) + '_' + rep.address + '.csv';
                 var logger = fs.createWriteStream('./logs/' + filename, {
@@ -237,7 +237,7 @@ noble.on('discover', function (peripheral) {
                 rawData: []
             })
             peripherals.push(peripheral);
-            matrix.setPixel(2, peripherals.indexOf(peripheral), blue);
+            matrix.setPixel(peripherals.indexOf(peripheral), 2, blue);
             //MPUConfig(address)
             peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35', 'ff37', 'ff38', 'ff3c', 'ff3b'], function (error, services, characteristics) {
                 var SmartLifeService = services[0];
