@@ -85,7 +85,7 @@ function startRaw(peripheralAddress) {
             stateCharacteristic.write(new Buffer([0x01]), true, function (error) {
                 console.log('Started RAW');
                 rep.startedRaw = true;
-                matrix.setPixel(peripheral.ledId % 8, 2 + ~~(peripheral.ledId/8), green);
+                matrix.setPixel(rep.ledId % 8, 2 + ~~(re.ledId/8), green);
 
                 rawCharacteristic.on('data', function (data, isNotification) {
                     let outputs = [];
@@ -179,7 +179,7 @@ function idle(peripheralAddress) {
             var stateCharacteristic = characteristics.find(c => c.uuid == 'ff35');
             stateCharacteristic.write(new Buffer([0x00]), true, function (error) {
                 console.log('Stopped RAW');
-                matrix.setPixel(peripheral.ledId % 8, 2 + ~~(peripheral.ledId/8), red);
+                matrix.setPixel(rep.ledId % 8, 2 + ~~(re.ledId/8), red);
                 rep.startedRaw = false;
                 let filename = 'log_' + new Date().toISOString().slice(0, 19) + '_' + rep.address + '.csv';
                 var logger = fs.createWriteStream('./logs/' + filename, {
@@ -231,15 +231,16 @@ noble.on('discover', function (peripheral) {
 
         peripheral.once('connect', function () {
             console.log(address, 'connected');
-            fullList.push({
+            let rep = {
                 address: peripheral.address,
                 connected: true,
                 startedRaw: false,
                 rawData: [],
                 ledId: peripherals.length
-            })
+            }
+            fullList.push(rep);
             peripherals.push(peripheral);
-            matrix.setPixel(peripheral.ledId % 8, 2 + ~~(peripheral.ledId/8), blue);
+            matrix.setPixel(rep.ledId % 8, 2 + ~~(rep.ledId/8), blue);
             //MPUConfig(address)
             peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35', 'ff37', 'ff38', 'ff3c', 'ff3b'], function (error, services, characteristics) {
                 var SmartLifeService = services[0];
@@ -292,7 +293,8 @@ noble.on('discover', function (peripheral) {
 
         peripheral.once('disconnect', function () {
             console.log(address, 'disconnected');
-            matrix.setPixel(peripheral.ledId % 8, 2 + ~~(peripheral.ledId/8), off);
+            let tempLedId = fullList.find(p => p.address == peripheral.address).ledId;
+            matrix.setPixel(tempLedId % 8, 2 + ~~(tempLedId/8), off);
             peripherals = peripherals.filter(p => { return p.address !== peripheral.address })
             fullList = fullList.filter(p => { return p.address !== peripheral.address })
         });
