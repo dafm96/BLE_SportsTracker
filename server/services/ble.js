@@ -128,18 +128,7 @@ function startRaw(peripheralAddress) {
                         }
                     }
 
-                    // outputs[0] = nSample * 0.02;
-                    // outputs[1] = accX * 9.8;
-                    // outputs[2] = accY * 9.8;
-                    // outputs[3] = accZ * 9.8;
-                    // outputs[4] = gyrX * Math.PI / 180;
-                    // outputs[5] = gyrY * Math.PI / 180;
-                    // outputs[6] = gyrZ * Math.PI / 180;
-                    // let s = "" + outputs;
-                    // let ai = rawToAi.convertRawToActivity(peripheralAddress, [outputs[1], outputs[2], outputs[3]]);
-                    // logger.write("" + s.replace(/,/gi, ';') + ";" + peripheralAddress + "\n");
-                    // console.log(peripheral.address, "Raw: " + Array.prototype.slice.call(data, 0))
-                    nSample = nSample * 0.02;
+                    nSample = (nSample * 0.02).toFixed(2);
                     accX = accX * 9.8;
                     accY = accY * 9.8;
                     accZ = accZ * 9.8;
