@@ -152,11 +152,13 @@ function startRaw(peripheralAddress) {
 }
 
 function convertToCSV(arr) {
-    const array = [Object.keys(arr[0])].concat(arr)
+    if (arr != undefined && arr.length > 0) {
+        const array = [Object.keys(arr[0])].concat(arr)
 
-    return array.map(it => {
-        return Object.values(it).toString()
-    }).join('\n')
+        return array.map(it => {
+            return Object.values(it).toString()
+        }).join('\n')
+    }
 }
 
 function idle(peripheralAddress) {
@@ -175,7 +177,8 @@ function idle(peripheralAddress) {
                     flags: 'a' // 'a' means appending (old data will be preserved)
                 })
                 //console.log(convertToCSV(rep.rawData))
-                logger.write("" + convertToCSV(rep.rawData).replace(/,/gi, ';') + "\n");
+                if(rep.rawData.length > 0)
+                    logger.write("" + convertToCSV(rep.rawData).replace(/,/gi, ';') + "\n");
                 rep.rawData = [];
             });
         })
