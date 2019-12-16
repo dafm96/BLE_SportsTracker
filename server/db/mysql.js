@@ -2,7 +2,8 @@ var mysql = require('mysql');
 var connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'password'
+    password: 'password',
+    database: 'BLE_Sports_Tracker'
 });
 
 connection.connect(function (err) {
@@ -14,4 +15,4 @@ connection.connect(function (err) {
     console.log('connected as id ' + connection.threadId);
 });
 
-module.exports = { connection }
+module.exports = connection
