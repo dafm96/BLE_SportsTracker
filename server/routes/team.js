@@ -1,5 +1,6 @@
 const express = require('express');
 const router = new express.Router();
+const connection = require('../db/mysql.js');
 
 // TODO refactor select *
 router.get('/teams', (req, res) => {
@@ -41,3 +42,5 @@ router.post('/teams', (req, res) => {
 router.delete('/teams/:teamsId', (req, res) => {
     res.send(/* delete team */);
 })
+
+module.exports = router
