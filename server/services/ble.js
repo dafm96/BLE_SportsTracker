@@ -2,7 +2,13 @@
 
 var noble = require('noble');
 //change min and max in leconn located in /node_modules/noble/lib/hci-socket/hci.js
+const matrix = require('sense-hat-led');
 var rawToAi = require('./rawToAi')
+const off = [0, 0, 0];
+const red = [255, 0, 0];
+const green = [0, 255, 0];
+const blue = [0, 0, 255];
+matrix.clear(off);
 var fs = require('fs')
 
 var fullList = []
@@ -79,6 +85,7 @@ function startRaw(peripheralAddress) {
             stateCharacteristic.write(new Buffer([0x01]), true, function (error) {
                 console.log('Started RAW');
                 rep.startedRaw = true;
+                matrix.setPixel(rep.ledId % 8, 2 + ~~(rep.ledId/8), green);
 
                 rawCharacteristic.on('data', function (data, isNotification) {
                     let outputs = [];
@@ -172,6 +179,7 @@ function idle(peripheralAddress) {
             var stateCharacteristic = characteristics.find(c => c.uuid == 'ff35');
             stateCharacteristic.write(new Buffer([0x00]), true, function (error) {
                 console.log('Stopped RAW');
+                matrix.setPixel(rep.ledId % 8, 2 + ~~(rep.ledId/8), red);
                 rep.startedRaw = false;
                 let filename = 'log_' + new Date().toISOString().slice(0, 19) + '_' + rep.address + '.csv';
                 var logger = fs.createWriteStream('./logs/' + filename, {
@@ -223,13 +231,16 @@ noble.on('discover', function (peripheral) {
 
         peripheral.once('connect', function () {
             console.log(address, 'connected');
-            fullList.push({
+            let rep = {
                 address: peripheral.address,
                 connected: true,
                 startedRaw: false,
-                rawData: []
-            })
+                rawData: [],
+                ledId: peripherals.length
+            }
+            fullList.push(rep);
             peripherals.push(peripheral);
+            matrix.setPixel(rep.ledId % 8, 2 + ~~(rep.ledId/8), blue);
             //MPUConfig(address)
             peripheral.discoverSomeServicesAndCharacteristics(['ff30'], ['ff35', 'ff37', 'ff38', 'ff3c', 'ff3b'], function (error, services, characteristics) {
                 var SmartLifeService = services[0];
@@ -282,6 +293,8 @@ noble.on('discover', function (peripheral) {
 
         peripheral.once('disconnect', function () {
             console.log(address, 'disconnected');
+            let tempLedId = fullList.find(p => p.address == peripheral.address).ledId;
+            matrix.setPixel(tempLedId % 8, 2 + ~~(tempLedId/8), off);
             peripherals = peripherals.filter(p => { return p.address !== peripheral.address })
             fullList = fullList.filter(p => { return p.address !== peripheral.address })
         });
