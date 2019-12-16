@@ -12,8 +12,15 @@ router.get('/teams', (req, res) => {
     })
 })
 
+// TODO refactor select *
 router.get('/teams/:teamId', (req, res) => {
-    res.send(/* send specific team */);
+    let q = 'SELECT * FROM Team WHERE Team.idTeam = ?';
+    connection.query(q, [req.params.teamId], function (err, result) {
+        if (err) {
+            res.status(400).send('DB error')
+        }
+        res.send((result));
+    })
 })
 
 router.post('/teams', (req, res) => {
