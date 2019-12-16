@@ -1,5 +1,6 @@
 const express = require('express');
 const router = new express.Router();
+const connection = require('../db/mysql');
 
 router.get('/players', (req, res) => {
     res.send(/* send all players */);
