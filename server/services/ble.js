@@ -144,6 +144,7 @@ function startRaw(peripheralAddress) {
                         gyrY,
                         gyrZ
                     };
+                    let ai = rawToAi.convertRawToActivity(peripheralAddress, [accX, accY, accZ]);
                     rep.rawData.push(sample);
                 });
             });
