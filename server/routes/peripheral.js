@@ -1,64 +1,58 @@
 const express = require('express');
 const router = new express.Router()
-const ble = require('../services/ble')
+var mqtt = require('mqtt')
+var client = mqtt.connect('mqtt://192.168.1.1')
+let connectedDevices = []
+
+client.on('connect', function () {
+    client.subscribe('connected');
+})
+
+
+client.on('message', function (topic, message) {
+    if (topic === 'connected') {
+        connectedDevices = (JSON.parse(message.toString()))
+    }
+})
+
 //TODO ADD Errors when no peripheralAddress is found
-router.get('/peripherals', function(req, res) {
-    res.send({ peripherals: ble.getPeripherals() })
+router.get('/peripherals', function (req, res) {
+    client.publish('fetchDevices','');
+    res.send({ peripherals: connectedDevices })
 })
 
-router.get('/peripherals/:peripheralAddress', function(req, res) {
-    res.json(ble.getPeripheral(req.params.peripheralAddress))
+router.get('/peripherals/:peripheralAddress', function (req, res) {
+    //res.json(ble.getPeripheral(req.params.peripheralAddress))
 })
 
-router.post('/peripherals/:peripheralAddress/startRaw', function(req, res) {
-    ble.startRaw(req.params.peripheralAddress)
+router.post('/peripherals/:peripheralAddress/startRaw', function (req, res) {
+    client.publish('operation', JSON.stringify({ operation: 'startRaw', address: req.params.peripheralAddress }))
     res.send()
 })
 
-router.post('/peripherals/:peripheralAddress/stopRaw', function(req, res) {
-    ble.idle(req.params.peripheralAddress)
+router.post('/peripherals/:peripheralAddress/stopRaw', function (req, res) {
+    client.publish('operation', JSON.stringify({ operation: 'stopRaw', address: req.params.peripheralAddress }))
     res.send()
 })
 
-router.post('/peripherals/:peripheralAddress/shutdown', function(req, res) {
-    ble.shutdown(req.params.peripheralAddress)
+router.post('/peripherals/:peripheralAddress/shutdown', function (req, res) {
+    client.publish('operation', JSON.stringify({ operation: 'shutdown', address: req.params.peripheralAddress }))
     res.send()
 })
 
-router.post('/startAllRaw', function(req, res) {
-    let p = ble.getPeripherals();
-    if (p.length > 0) {
-        p.map(p => p.address).forEach(element => {
-            ble.startRaw(element)
-        });
-        res.send()
-    } else {
-        res.status(400).send()
-    }
+router.post('/startAllRaw', function (req, res) {
+    client.publish('operation', JSON.stringify({ operation: 'startAllRaw' }))
+    res.send()
 })
 
-router.post('/stopAllRaw', function(req, res) {
-    let p = ble.getPeripherals();
-    if (p.length > 0) {
-        p.map(p => p.address).forEach(element => {
-            ble.idle(element)
-        });
-        res.send()
-    } else {
-        res.status(400).send()
-    }
+router.post('/stopAllRaw', function (req, res) {
+    client.publish('operation', JSON.stringify({ operation: 'stopAllRaw' }))
+    res.send()
 })
 
-router.post('/shutdownAll', function(req, res) {
-    let p = ble.getPeripherals();
-    if (p.length > 0) {
-        p.map(p => p.address).forEach(element => {
-            ble.shutdown(element)
-        });
-        res.send()
-    } else {
-        res.status(400).send()
-    }
+router.post('/shutdownAll', function (req, res) {
+    client.publish('operation', JSON.stringify({ operation: 'shutdownAll' }))
+    res.send()
 })
 
 router.get('/tracking', (req, res) => {
