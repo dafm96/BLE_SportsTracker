@@ -45,8 +45,14 @@ router.post('/teams', (req, res) => {
     })
 })
 
-router.delete('/teams/:teamsId', (req, res) => {
-    res.send(/* delete team */);
+router.delete('/teams/:teamId', (req, res) => {
+    let q = 'DELETE FROM Team WHERE idTeam = ?';
+    connection.query(q, [req.params.teamId], function (err, result) {
+        if (err) {
+            return res.status(400).send('DB error:' + err)
+        }
+        res.send((result));
+    })
 })
 
 module.exports = router
