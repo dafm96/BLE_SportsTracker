@@ -55,4 +55,22 @@ router.delete('/teams/:teamId', (req, res) => {
     })
 })
 
+router.patch('/teams/:teamId', (req, res) => {
+    const updates = Object.keys(req.body)
+    const allowedUpdates = ['teamName']
+    const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
+
+    if (!isValidOperation) {
+        return res.status(400).send({error: 'Invalid updates!'})
+    }
+
+    let q = 'UPDATE Team SET ? WHERE idTeam = ?';
+    connection.query(q, [req.body, req.params.teamId], function (err, result) {
+        if (err) {
+            return res.status(400).send('DB error:' + err)
+        }
+        res.send((result));
+    })
+})
+
 module.exports = router
