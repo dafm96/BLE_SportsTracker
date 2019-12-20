@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cd server && node server.js",
+    "start": "cd server && nodemon server.js",
     "client": "cd client && npm start",
     "server": "npm start",
     "dev": "concurrently \"npm run server\" \"npm run client\""
@@ -23,6 +23,7 @@
     "react-router-dom": "^5.1.2"
   },
   "devDependencies": {
-    "concurrently": "^5.0.0"
+    "concurrently": "^5.0.0",
+    "nodemon": "^2.0.2"
   }
 }
