@@ -33,7 +33,13 @@ router.post('/players', (req, res) => {
 })
 
 router.delete('/players/:playerId', (req, res) => {
-    res.send(/* delete player */);
+    let q = 'DELETE FROM Player WHERE idPlayer = ?';
+    connection.query(q, [req.params.playerId], function (err, result) {
+        if (err) {
+            return res.status(400).send('DB error:' + err)
+        }
+        res.send((result));
+    })
 })
 
 module.exports = router
