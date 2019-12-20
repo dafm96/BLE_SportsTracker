@@ -5,7 +5,7 @@ router.get('/players', (req, res) => {
     let q = 'SELECT * FROM Player';
     connection.query(q, function (err, result) {
         if (err) {
-            res.status(400).send('DB error')
+            return res.status(400).send('DB error')
         }
         res.send((result));
     })
@@ -15,7 +15,7 @@ router.get('/players/:playerId', (req, res) => {
     let q = 'SELECT * FROM Player WHERE Player.idPlayer = ?';
     connection.query(q, [req.params.playerId], function (err, result) {
         if (err) {
-            res.status(400).send('DB error')
+            return res.status(400).send('DB error')
         }
         res.send((result));
     })
