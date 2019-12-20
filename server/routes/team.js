@@ -36,7 +36,13 @@ router.get('/teams/:teamId/players', (req, res) => {
 })
 
 router.post('/teams', (req, res) => {
-    res.send(/* add team */);
+    let q = 'INSERT INTO Team (name) VALUES (?)'
+    connection.query(q, [req.body.teamName], function (err, result) {
+        if (err) {
+            return res.status(400).send('DB error:' + err)
+        }
+        res.send((result));
+    })
 })
 
 router.delete('/teams/:teamsId', (req, res) => {
