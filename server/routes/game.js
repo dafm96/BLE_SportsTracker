@@ -35,7 +35,13 @@ router.post('/games', (req, res) => {
 })
 
 router.delete('/games/:gameId', (req, res) => {
-    res.send(/* delete game */);
+    let q = 'DELETE FROM Game WHERE idGame = ?';
+    connection.query(q, [req.params.gameId], function (err, result) {
+        if (err) {
+            return res.status(400).send('DB error:' + err)
+        }
+        res.send((result));
+    })
 })
 
 module.exports = router
