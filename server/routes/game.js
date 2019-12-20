@@ -14,7 +14,13 @@ router.get('/games', (req, res) => {
 })
 
 router.get('/games/:gameId', (req, res) => {
-    res.send(/* send specific team */);
+    let q = 'SELECT * FROM Game WHERE Game.idGame = ?';
+    connection.query(q, [req.params.gameId], function (err, result) {
+        if (err) {
+            return res.status(400).send('DB error')
+        }
+        res.send((result));
+    })
 })
 
 router.post('/games', (req, res) => {
