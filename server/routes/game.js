@@ -24,8 +24,14 @@ router.get('/games/:gameId', (req, res) => {
 })
 
 router.post('/games', (req, res) => {
-    /* send in body date and teams */
-    res.send(/* add game */);
+    //date must be "YYYY-MM-DD HH:MM:SS" 
+    let q = 'INSERT INTO Game (date, team1_id, team2_id) VALUES (?, ?, ?)'
+    connection.query(q, [req.body.date, req.body.teamId_1, req.body.teamId_2], function (err, result) {
+        if (err) {
+            return res.status(400).send('DB error:' + err)
+        }
+        res.send((result));
+    })
 })
 
 router.delete('/games/:gameId', (req, res) => {
