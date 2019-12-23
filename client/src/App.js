@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import PlotComponent from "./PlotComponent";
+import TeamList from "./Teams/TeamList";
 import TeamDetailComponent from './Teams/TeamDetail';
 import {
   BrowserRouter as Router,
