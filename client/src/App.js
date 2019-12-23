@@ -2,7 +2,9 @@ import React from 'react';
 import './App.css';
 import PlotComponent from "./PlotComponent";
 import TeamList from "./Teams/TeamList";
-import TeamDetailComponent from './Teams/TeamDetail';
+import TeamDetail from './Teams/TeamDetail';
+import GameList from "./Games/GameList";
+import GameDetail from "./Games/GameDetail";
 import {
   BrowserRouter as Router,
   Switch,
@@ -256,13 +258,18 @@ function App() {
             <li>
               <Link to="/teams">Teams</Link>
             </li>
+            <li>
+              <Link to="/games">Games</Link>
+            </li>
           </ul>
         </nav>
 
         {/* A <Switch> looks through its children <Route>s and
       renders the first one that matches the current URL. */}
         <Switch>
-          <Route path="/teams/:teamId" component={TeamDetailComponent} />
+          <Route path="/games/:gameId" component={GameDetail} />
+          <Route path="/games/" component={GameList} />
+          <Route path="/teams/:teamId" component={TeamDetail} />
           <Route path="/teams" component={TeamList} />
           <Route path="/plot" component={PlotComponent} />
           <Route path="/" component={Peripherals} />

@@ -4,7 +4,7 @@ const connection = require('../db/mysql.js');
 
 router.get('/games', (req, res) => {
     //TODO query params
-    let q = 'SELECT * FROM Game';
+    let q = 'SELECT * FROM gameTeams';
     connection.query(q, function (err, result) {
         if (err) {
             return res.status(400).send('DB error')
@@ -14,7 +14,7 @@ router.get('/games', (req, res) => {
 })
 
 router.get('/games/:gameId', (req, res) => {
-    let q = 'SELECT * FROM Game WHERE Game.idGame = ?';
+    let q = 'SELECT * FROM gameTeams WHERE idGame = ?';
     connection.query(q, [req.params.gameId], function (err, result) {
         if (err) {
             return res.status(400).send('DB error')
