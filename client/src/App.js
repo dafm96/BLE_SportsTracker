@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import PlotComponent from "./PlotComponent";
+import TeamDetailComponent from './Teams/TeamDetail';
 import {
   BrowserRouter as Router,
   Switch,
@@ -251,19 +252,20 @@ function App() {
             <li>
               <Link to="/plot">Plot</Link>
             </li>
+            <li>
+              <Link to="/teams">Teams</Link>
+            </li>
           </ul>
         </nav>
 
         {/* A <Switch> looks through its children <Route>s and
       renders the first one that matches the current URL. */}
         <Switch>
-        <Route path="/plot">
-            <PlotComponent />
-            </Route>
-          <Route path="/">
-            <Peripherals />
-            </Route>
-          
+          <Route path="/teams/:teamId" component={TeamDetailComponent} />
+          <Route path="/teams" component={TeamList} />
+          <Route path="/plot" component={PlotComponent} />
+          <Route path="/" component={Peripherals} />
+
         </Switch>
       </div>
     </Router>
