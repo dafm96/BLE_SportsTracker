@@ -26,12 +26,23 @@ router.get('/teams/:teamId', (req, res) => {
 
 // TODO refactor select *
 router.get('/teams/:teamId/players', (req, res) => {
-    let q = 'SELECT * FROM teamPlayers WHERE idTeam = ?';
+    let q = 'SELECT idTeam, teamName, idPlayer, playerName FROM teamPlayers WHERE idTeam = ?';
     connection.query(q, [req.params.teamId], function (err, result) {
         if (err) {
             return res.status(400).send('DB error')
         }
-        res.send((result));
+        let out = {
+            teamId: 0,
+            teamName: '',
+            players: []
+        }
+        result.map(data => {
+            out.teamId = data.idTeam;
+            out.teamName = data.teamName;
+            out.players.push({playerId: data.idPlayer, playerName: data.playerName})
+        })
+        console.log(out)
+        res.send(out);
     })
 })
 
@@ -61,7 +72,7 @@ router.patch('/teams/:teamId', (req, res) => {
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
 
     if (!isValidOperation) {
-        return res.status(400).send({error: 'Invalid updates!'})
+        return res.status(400).send({ error: 'Invalid updates!' })
     }
 
     let q = 'UPDATE Team SET ? WHERE idTeam = ?';

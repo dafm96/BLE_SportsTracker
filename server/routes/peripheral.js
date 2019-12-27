@@ -1,7 +1,7 @@
 const express = require('express');
 const router = new express.Router()
 var mqtt = require('mqtt')
-var client = mqtt.connect('mqtt://192.168.1.1')
+var client = mqtt.connect('mqtt://192.168.1.9')
 let connectedDevices = []
 
 client.on('connect', function () {
@@ -15,14 +15,12 @@ client.on('message', function (topic, message) {
     }
 })
 
-//TODO ADD Errors when no peripheralAddress is found
 router.get('/peripherals', function (req, res) {
-    client.publish('fetchDevices','');
     res.send({ peripherals: connectedDevices })
 })
 
 router.get('/peripherals/:peripheralAddress', function (req, res) {
-    //res.json(ble.getPeripheral(req.params.peripheralAddress))
+    res.send(connectedDevices.filter(p => p.address === req.params.peripheralAddress))
 })
 
 router.post('/peripherals/:peripheralAddress/startRaw', function (req, res) {
