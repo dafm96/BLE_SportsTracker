@@ -12,7 +12,7 @@ import {
   Link
 } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.css';
-import { Button } from 'react-bootstrap';
+import { Button, ButtonGroup } from 'react-bootstrap';
 
 class ShutdownButton extends React.Component {
   render() {
@@ -69,9 +69,11 @@ class AllDevices extends React.Component {
   render() {
     return (
       <div id="allDevices" >
-        <StartButton handler={this.startAllHandler} type={"success"} text={"Start All"} />
-        <StartButton handler={this.stopAllHandler} type={"danger"} text={"Stop All"} />
-        <ShutdownButton handler={this.shutdownAllHandler} type={"secondary"} text={"Shutdown All"} />
+        <ButtonGroup>
+          <StartButton handler={this.startAllHandler} type={"success"} text={"Start All"} />
+          <StartButton handler={this.stopAllHandler} type={"danger"} text={"Stop All"} />
+          <ShutdownButton handler={this.shutdownAllHandler} type={"secondary"} text={"Shutdown All"} />
+        </ButtonGroup>
       </div>
     )
   }
@@ -135,16 +137,17 @@ class PeripheralRow extends React.Component {
         <td>{"" + this.props.connected}</td>
         <td>{"" + this.props.startedRaw}</td>
         <td>
-          <StartButton
-            handler={this.startHandler}
-            type={this.props.startedRaw ? "danger" : "success"}
-            text={this.props.startedRaw ? "Stop" : "Start"} />
-        </td>
-        <td>
-          <ShutdownButton
-            handler={this.shutdownHandler}
-            type={"secondary"}
-            text={"Shutdown"} />
+          <ButtonGroup >
+            <StartButton
+              handler={this.startHandler}
+              type={this.props.startedRaw ? "danger" : "success"}
+              text={this.props.startedRaw ? "Stop" : "Start"} />
+
+            <ShutdownButton
+              handler={this.shutdownHandler}
+              type={"secondary"}
+              text={"Shutdown"} />
+          </ButtonGroup>
         </td>
       </tr>
 
@@ -228,7 +231,7 @@ class Peripherals extends React.Component {
                 <th>ADDRESS</th>
                 <th>CONNECTED</th>
                 <th>STARTEDRAW</th>
-                <th colSpan="2">OPERATIONS</th>
+                <th>OPERATIONS</th>
               </tr>
               {this.renderTableData()}
             </tbody>
