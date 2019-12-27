@@ -12,13 +12,12 @@ import {
   Link
 } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.css';
+import { Button } from 'react-bootstrap';
 
 class ShutdownButton extends React.Component {
   render() {
     return (
-      <button onClick={this.props.handler}>
-        {this.props.text}
-      </button>
+      <Button variant={this.props.type} onClick={this.props.handler}>{this.props.text}</Button>
     );
   }
 }
@@ -26,9 +25,7 @@ class ShutdownButton extends React.Component {
 class StartButton extends React.Component {
   render() {
     return (
-      <button onClick={this.props.handler}>
-        {this.props.text}
-      </button>
+      <Button variant={this.props.type} onClick={this.props.handler}>{this.props.text}</Button>
     );
   }
 }
@@ -72,12 +69,9 @@ class AllDevices extends React.Component {
   render() {
     return (
       <div id="allDevices" >
-        <StartButton handler={this.startAllHandler} text={<i className="fa fa-play"></i>} />
-        <StartButton handler={this.stopAllHandler} text={<i className="fa fa-stop"></i>} />
-        <ShutdownButton
-          handler={this.shutdownAllHandler}
-          text={<i className="fa fa-power-off"></i>}
-        />
+        <StartButton handler={this.startAllHandler} type={"success"} text={"Start All"} />
+        <StartButton handler={this.stopAllHandler} type={"danger"} text={"Stop All"} />
+        <ShutdownButton handler={this.shutdownAllHandler} type={"secondary"} text={"Shutdown All"} />
       </div>
     )
   }
@@ -143,12 +137,14 @@ class PeripheralRow extends React.Component {
         <td>
           <StartButton
             handler={this.startHandler}
-            text={this.props.startedRaw ? <i className="fa fa-stop"></i> : <i className="fa fa-play"></i>} />
+            type={this.props.startedRaw ? "danger" : "success"}
+            text={this.props.startedRaw ? "Stop" : "Start"} />
         </td>
         <td>
           <ShutdownButton
             handler={this.shutdownHandler}
-            text={<i className="fa fa-power-off"></i>} />
+            type={"secondary"}
+            text={"Shutdown"} />
         </td>
       </tr>
 
@@ -176,7 +172,7 @@ class Peripherals extends React.Component {
         that.setState({ peripherals: jsonData.peripherals });
       })
       .catch((e) => {
-        let newState  = { peripherals: '' };
+        let newState = { peripherals: '' };
         that.setState(newState);
         console.log('No connection to server.')
       })
@@ -227,7 +223,13 @@ class Peripherals extends React.Component {
           <AllDevices startedRaw={this.state.startedRaw} />
           <table id='peripherals'>
             <tbody>
-              <tr><th></th>{this.renderTableHeader()}<th colSpan="2">OPERATIONS</th></tr>
+              <tr>
+                <th></th>
+                <th>ADDRESS</th>
+                <th>CONNECTED</th>
+                <th>STARTEDRAW</th>
+                <th colSpan="2">OPERATIONS</th>
+              </tr>
               {this.renderTableData()}
             </tbody>
           </table>
