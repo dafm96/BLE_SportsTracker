@@ -39,9 +39,9 @@ router.get('/teams/:teamId/players', (req, res) => {
         result.map(data => {
             out.teamId = data.idTeam;
             out.teamName = data.teamName;
-            out.players.push({playerId: data.idPlayer, playerName: data.playerName})
+            if(data.idPlayer !== null)
+                out.players.push({playerId: data.idPlayer, playerName: data.playerName})
         })
-        console.log(out)
         res.send(out);
     })
 })
