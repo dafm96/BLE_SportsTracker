@@ -5,6 +5,10 @@ import TeamList from "./Teams/TeamList";
 import TeamDetail from './Teams/TeamDetail';
 import GameList from "./Games/GameList";
 import GameDetail from "./Games/GameDetail";
+import PlayerList from "./Players/PlayerList";
+import PlayerDetail from "./Players/PlayerDetail";
+
+
 import {
   BrowserRouter as Router,
   Switch,
@@ -266,12 +270,17 @@ function App() {
             <li>
               <Link to="/games">Games</Link>
             </li>
+            <li>
+              <Link to="/players">Players</Link>
+            </li>
           </ul>
         </nav>
 
         {/* A <Switch> looks through its children <Route>s and
       renders the first one that matches the current URL. */}
         <Switch>
+          <Route path="/players/:playerId" component={PlayerDetail} />
+          <Route path="/players/" component={PlayerList} />
           <Route path="/games/:gameId" component={GameDetail} />
           <Route path="/games/" component={GameList} />
           <Route path="/teams/:teamId" component={TeamDetail} />
