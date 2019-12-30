@@ -2,7 +2,7 @@ const express = require('express');
 const router = new express.Router();
 const connection = require('../db/mysql.js');
 router.get('/players', (req, res) => {
-    let q = 'SELECT * FROM Player';
+    let q = 'SELECT * FROM playerTeam';
     connection.query(q, function (err, result) {
         if (err) {
             return res.status(400).send('DB error')
@@ -12,7 +12,7 @@ router.get('/players', (req, res) => {
 })
 
 router.get('/players/:playerId', (req, res) => {
-    let q = 'SELECT * FROM Player WHERE Player.idPlayer = ?';
+    let q = 'SELECT * FROM playerTeam WHERE idPlayer = ?';
     connection.query(q, [req.params.playerId], function (err, result) {
         if (err) {
             return res.status(400).send('DB error')
