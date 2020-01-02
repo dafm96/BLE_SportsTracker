@@ -50,9 +50,11 @@ class TeamDetailComponent extends Component {
                         <h3 >Players:</h3>
                         <ListGroup >
                             {team.players.map(player =>
-                                <ListGroup.Item key={player.idPlayer}>
-                                    
+                                <ListGroup.Item key={player.playerId}>
+                                    <a href={'/players/' + player.playerId}>
+                                     {console.log(player)}
                                     {player.playerName}
+                                    </a>
                                 </ListGroup.Item>
                             )}
                         </ListGroup>
