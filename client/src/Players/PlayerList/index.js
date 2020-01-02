@@ -45,7 +45,7 @@ class NameForm extends Component {
     }
 
     componentDidMount() {
-        fetch('/teamss')
+        fetch('/teams')
             .then(response => {
                 if (response.ok) {
                     return response.json();
