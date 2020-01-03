@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Spinner from 'react-bootstrap/Spinner';
-import { Row, Col, ListGroup, Jumbotron, Container } from 'react-bootstrap';
+import { ListGroup, Jumbotron, Container } from 'react-bootstrap';
 const API = '/players/';
 
 class PlayerDetailComponent extends Component {

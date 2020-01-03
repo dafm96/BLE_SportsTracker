@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Spinner from 'react-bootstrap/Spinner';
-import { ListGroup, Jumbotron, Container, CardColumns, Card, Button, ButtonToolbar, Modal, Form } from 'react-bootstrap';
+import { Jumbotron, Container, CardColumns, Card, Button, Modal, Form } from 'react-bootstrap';
 const API = '/games/';
 
 class NameForm extends Component {
@@ -28,7 +28,7 @@ class NameForm extends Component {
             event.stopPropagation();
         }
         event.preventDefault();
-        fetch('/games/'+this.state.ppgid, {
+        fetch('/games/' + this.state.ppgid, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -87,11 +87,10 @@ function MyVerticallyCenteredModal(props) {
             aria-labelledby="contained-modal-title-vcenter"
             centered
         >
-        {console.log("hey", props.ppgid)}
             <Modal.Header closeButton>
                 <Modal.Title id="contained-modal-title-vcenter">
                     Choose Peripheral
-          </Modal.Title>
+            </Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <NameForm ppgid={props.ppgid} />
