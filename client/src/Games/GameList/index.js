@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import AddGameModal from "./AddGameModal"
 import Spinner from 'react-bootstrap/Spinner';
-import { Row, Col, ListGroup, Container, Jumbotron } from 'react-bootstrap';
+import { ListGroup, Container, Jumbotron, ButtonToolbar, Button } from 'react-bootstrap';
 const API = '/games';
 
 class GameListComponent extends Component {
@@ -11,6 +12,7 @@ class GameListComponent extends Component {
             games: [],
             isLoading: false,
             error: null,
+            modalShow: false
         };
     }
 
@@ -46,14 +48,24 @@ class GameListComponent extends Component {
                         <Jumbotron fluid className="text-center">
                             <h1>Games</h1>
                         </Jumbotron>
+                        <ButtonToolbar>
+                            <Button variant="primary" onClick={() => this.setState({ modalShow: true })}>
+                                Add New Team
+                            </Button>
+
+                            <AddGameModal
+                                show={this.state.modalShow}
+                                onHide={() => this.setState({ modalShow: false })}
+                            />
+                        </ButtonToolbar>
                         <ListGroup >
                             {games.map(game =>
                                 <ListGroup.Item key={game.idGame}>
                                     <a href={"/games/" + game.idGame}>
-                                        <h3 style={{display:"inline"}}>{game.team1_name}</h3> X <h3 style={{display:"inline"}}>{game.team2_name}</h3> 
-                                        
+                                        <h3 style={{ display: "inline" }}>{game.team1_name}</h3> X <h3 style={{ display: "inline" }}>{game.team2_name}</h3>
+
                                     </a>
-                                    <br/>
+                                    <br />
                                     {game.gameDate}
 
                                 </ListGroup.Item>
