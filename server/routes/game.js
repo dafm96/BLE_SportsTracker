@@ -52,7 +52,7 @@ router.put('/games/:ppgid', (req, res) => {
 
 router.post('/games', (req, res) => {
     //date must be "YYYY-MM-DD HH:MM:SS" 
-    let q = 'INSERT INTO Game (date, team1_id, team2_id) VALUES (?, ?, ?)'
+    let q = 'INSERT INTO Game (gameDate, team1_id, team2_id) VALUES (?, ?, ?)'
     connection.query(q, [req.body.date, req.body.teamId_1, req.body.teamId_2], function (err, result) {
         if (err) {
             return res.status(400).send('DB error:' + err)
