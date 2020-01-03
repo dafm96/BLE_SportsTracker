@@ -23,6 +23,33 @@ router.get('/games/:gameId', (req, res) => {
     })
 })
 
+//TODO switch joins to view?
+router.get('/games/:gameId/info', (req, res) => {
+    let q = 'SELECT * FROM Player_Peripheral_Game ppg '
+        + 'inner join Player p on ppg.player_id = p.idPlayer '
+        + 'inner join Team t on p.teamId = t.idTeam '
+        + 'where ppg.game_id = ?';
+    connection.query(q, [req.params.gameId], function (err, result) {
+        if (err) {
+            return res.status(400).send('DB error')
+        }
+        res.send((result));
+    })
+})
+
+router.put('/games/:ppgid', (req, res) => {
+    let q = 'UPDATE Player_Peripheral_Game SET peripheral_id = (SELECT idPeripheral FROM BLE_Sports_Tracker.Peripheral where peripheralAddress = ?) WHERE (idPlayer_Peripheral_Game = ?)';
+    connection.query(q, [req.body.peripheralAddress, req.params.ppgid], function (err, result) {
+        if (err) {
+            console.log(err)
+            return res.status(400).send('DB error')
+        }
+        console.log(result)
+        res.send((result));
+    })
+})
+
+
 router.post('/games', (req, res) => {
     //date must be "YYYY-MM-DD HH:MM:SS" 
     let q = 'INSERT INTO Game (date, team1_id, team2_id) VALUES (?, ?, ?)'
