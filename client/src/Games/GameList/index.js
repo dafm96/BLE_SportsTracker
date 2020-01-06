@@ -66,7 +66,7 @@ class GameListComponent extends Component {
 
                                     </a>
                                     <br />
-                                    {game.gameDate}
+                                    {new Date(game.gameDate).toLocaleString('pt')}
 
                                 </ListGroup.Item>
                             )}

@@ -63,7 +63,7 @@ class GameDetailComponent extends Component {
                     <>
                         <Jumbotron fluid className="text-center">
                             <h3 style={{ display: "inline" }}>{game.team1_name}</h3> X <h3 style={{ display: "inline" }}>{game.team2_name}</h3>
-                            <h2>{game.gameDate}</h2>
+                            <h2>{new Date(game.gameDate).toLocaleString('pt')}</h2>
                         </Jumbotron>
                         <AllDevices></AllDevices>
                         {/* TODO add button to start/stop/shutdown for all peripherals in game */}
