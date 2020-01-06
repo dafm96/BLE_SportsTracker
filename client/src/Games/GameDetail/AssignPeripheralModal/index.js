@@ -9,14 +9,11 @@ class AssignPeripheralToPlayerForm extends Component {
             peripherals: [],
             peripheralAddress: ''
         };
-        console.log(props)
         this.handlePeripheralChange = this.handlePeripheralChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
     handlePeripheralChange(event) {
-
         this.setState({ peripheralAddress: event.target.value });
-        console.log(event.target.value)
     }
 
     handleSubmit = event => {
@@ -45,7 +42,6 @@ class AssignPeripheralToPlayerForm extends Component {
     }
 
     componentDidMount() {
-        console.log(this.state.ppgid)
         fetch('/peripherals')
             .then(response => {
                 if (response.ok) {
@@ -69,7 +65,6 @@ class AssignPeripheralToPlayerForm extends Component {
                         as="select"
                         onChange={this.handlePeripheralChange}>
                         {this.state.peripherals.map(p => <option key={p.address} value={p.address}>{p.address}</option>)}
-                        {console.log(this.state.peripherals)}
                     </Form.Control>
                 </Form.Group>
                 <Button type="submit">Submit form</Button>

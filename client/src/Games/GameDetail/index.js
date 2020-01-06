@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Spinner from 'react-bootstrap/Spinner';
 import AssignPeripheralModal from './AssignPeripheralModal'
 import { Jumbotron, Container, CardColumns, Card, Button } from 'react-bootstrap';
+import AllDevices from './ControlPeripherals';
 const API = '/games/';
 
 class GameDetailComponent extends Component {
@@ -39,7 +40,6 @@ class GameDetailComponent extends Component {
                         }
                     })
                     .then(data => {
-                        console.log(data);
                         this.setState({ gameInfo: data, isLoading: false })
                     })
             )
@@ -65,6 +65,7 @@ class GameDetailComponent extends Component {
                             <h3 style={{ display: "inline" }}>{game.team1_name}</h3> X <h3 style={{ display: "inline" }}>{game.team2_name}</h3>
                             <h2>{game.gameDate}</h2>
                         </Jumbotron>
+                        <AllDevices></AllDevices>
                         {/* TODO add button to start/stop/shutdown for all peripherals in game */}
 
                         <CardColumns style={{ columnCount: "2" }}>
