@@ -182,7 +182,7 @@ class GameDetailComponent extends Component {
                                                                 onHide={() => this.setState({ modalShow: false })}
                                                             />
                                                         </>
-                                                        : <>{ppg.peripheral_id}</>}
+                                                        : <>{ppg.peripheralAddress}</>}
                                                     {/* TODO add button to start/stop/shutdown peripheral for each player and unbind */}
                                                 </Card.Text>
                                             </>
@@ -208,7 +208,7 @@ class GameDetailComponent extends Component {
                                                                 onHide={() => this.setState({ modalShow: false })}
                                                             />
                                                         </>
-                                                        : <>{ppg.peripheral_id}</>}
+                                                        : <>{ppg.peripheralAddress}</>}
                                                     {/* TODO add button to start/stop/shutdown peripheral for each player and unbind */}
                                                 </Card.Text>
                                             </>

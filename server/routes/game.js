@@ -28,6 +28,7 @@ router.get('/games/:gameId/info', (req, res) => {
     let q = 'SELECT * FROM Player_Peripheral_Game ppg '
         + 'inner join Player p on ppg.player_id = p.idPlayer '
         + 'inner join Team t on p.teamId = t.idTeam '
+        + 'left join Peripheral ph on ppg.peripheral_id = ph.idPeripheral '
         + 'where ppg.game_id = ?';
     connection.query(q, [req.params.gameId], function (err, result) {
         if (err) {
