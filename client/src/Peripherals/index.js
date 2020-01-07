@@ -150,7 +150,7 @@ class Peripherals extends React.Component {
     constructor(props) {
         super(props);
         this.state = { peripherals: '' };
-
+        this.updateInterval = null;
         this.updateInfoOnPeripherals = this.updateInfoOnPeripherals.bind(this)
     }
 
@@ -170,10 +170,14 @@ class Peripherals extends React.Component {
             })
     }
 
-    async componentDidMount() {
-        setInterval(() => {
+    componentDidMount() {
+        this.updateInterval = setInterval(() => {
             this.updateInfoOnPeripherals()
         }, 2000);
+    }
+
+    componentWillUnmount(){
+        clearInterval(this.updateInterval)
     }
 
     renderTableData() {
