@@ -76,7 +76,7 @@ router.get('/tracking', (req, res) => {
     });
 })
 
-router.post('/peripherals/:gameId/start', (req, res) => {
+router.post('/peripherals/game/:gameId/start', (req, res) => {
     let q = 'SELECT * FROM BLE_Sports_Tracker.Player_Peripheral_Game ppg '
         + 'inner join Peripheral ph on ppg.peripheral_id = ph.idPeripheral '
         + 'where ppg.game_id = ?';
@@ -86,7 +86,6 @@ router.post('/peripherals/:gameId/start', (req, res) => {
             return res.status(400).send('DB error')
         }
         for (const item of result) {
-            console.log(item.peripheralAddress)
             client.publish('operation',
                 JSON.stringify({
                     operation: 'startRaw',
@@ -102,7 +101,7 @@ router.post('/peripherals/:gameId/start', (req, res) => {
     })
 })
 
-router.post('/peripherals/:gameId/stop', (req, res) => {
+router.post('/peripherals/game/:gameId/stop', (req, res) => {
     let q = 'SELECT * FROM BLE_Sports_Tracker.Player_Peripheral_Game ppg '
         + 'inner join Peripheral ph on ppg.peripheral_id = ph.idPeripheral '
         + 'where ppg.game_id = ?';
@@ -120,6 +119,27 @@ router.post('/peripherals/:gameId/stop', (req, res) => {
                 }))
         }
         client.unsubscribe('metrics/' + req.params.gameId + "/activityTime");
+        res.send();
+    })
+})
+
+router.post('/peripherals/game/:gameId/shutdown', (req, res) => {
+    let q = 'SELECT * FROM BLE_Sports_Tracker.Player_Peripheral_Game ppg '
+        + 'inner join Peripheral ph on ppg.peripheral_id = ph.idPeripheral '
+        + 'where ppg.game_id = ?';
+
+    connection.query(q, [req.params.gameId], async function (err, result) {
+        if (err) {
+            return res.status(400).send('DB error')
+        }
+        for (const item of result) {
+            console.log(item.peripheralAddress)
+            client.publish('operation',
+                JSON.stringify({
+                    operation: 'shutdown',
+                    address: item.peripheralAddress,
+                }))
+        }
         res.send();
     })
 })
