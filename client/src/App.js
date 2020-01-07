@@ -17,31 +17,28 @@ import {
   Link
 } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.css';
+import { Nav, Navbar } from 'react-bootstrap';
 
 function App() {
+  const [expanded, setExpanded] = React.useState(false);
   return (
     <Router>
       <div>
-        <h1 id='title'>BLE Sports Tracker</h1>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/games">Games</Link>
-            </li>
-            <li>
-              <Link to="/players">Players</Link>
-            </li>
-            <li>
-              <Link to="/teams">Teams</Link>
-            </li>
-            <li>
-              <Link to="/peripherals">Peripherals</Link>
-            </li>
-            <li>
-              <Link to="/plot">Plot</Link>
-            </li>
-          </ul>
-        </nav>
+        {/* <h1 id='title'>BLE Sports Tracker</h1> */}
+        <Navbar expanded={expanded} expand="md" bg="dark" variant="dark">
+          <Navbar.Brand>BLE Sports Tracker</Navbar.Brand>
+          <Navbar.Toggle onClick={() => setExpanded(expanded ? false : "expanded")} aria-controls="responsive-navbar-nav" />
+          <Navbar.Collapse id="responsive-navbar-nav">
+            <Nav className="mr-auto">
+              <Nav.Link as={Link} onClick={() => setExpanded(false)} to="/games">Games</Nav.Link>
+              <Nav.Link as={Link} onClick={() => setExpanded(false)} to="/players">Players</Nav.Link>
+              <Nav.Link as={Link} onClick={() => setExpanded(false)} to="/teams">Teams</Nav.Link>
+              <Nav.Link as={Link} onClick={() => setExpanded(false)} to="/peripherals">Peripherals</Nav.Link>
+              <Nav.Link as={Link} onClick={() => setExpanded(false)} to="/plot">Plot</Nav.Link>
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
+
 
         {/* A <Switch> looks through its children <Route>s and
       renders the first one that matches the current URL. */}
