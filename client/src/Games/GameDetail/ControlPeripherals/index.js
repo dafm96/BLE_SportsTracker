@@ -4,54 +4,42 @@ import { Button, ButtonGroup } from "react-bootstrap";
 class AllDevices extends Component {
     constructor(props) {
         super(props);
-
+        this.state = {
+            gameId: props.gameId
+        }
         this.startAllHandler = this.startAllHandler.bind(this)
         this.stopAllHandler = this.stopAllHandler.bind(this)
+        this.shutdownAllHandler = this.shutdownAllHandler.bind(this)
     }
 
     startAllHandler() {
-        let route = '/startAllRaw'
+        let route = '/peripherals/game/' + this.state.gameId + '/start'
 
         fetch(route, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                //TODO send things here
-            })
+            method: 'POST'
+        }).then(() => {
+            console.log("Started All");
         })
-            .then(() => {
-                console.log("Started All");
-            })
     }
 
     stopAllHandler() {
-        let route = '/stopAllRaw'
+        let route = '/peripherals/game/' + this.state.gameId + '/stop'
 
         fetch(route, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                //TODO send things here
-            })
+            method: 'POST'
+        }).then(() => {
+            console.log("Stopped All");
         })
-            .then(() => {
-                console.log("Stopped All");
-            })
     }
 
     shutdownAllHandler() {
-        let route = '/shutdownAll'
+        let route = '/peripherals/game/' + this.state.gameId + '/shutdown'
 
         fetch(route, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                //TODO send things here
-            })
+            method: 'POST'
+        }).then(() => {
+            console.log("Shutdown All");
         })
-            .then(() => {
-                console.log("Shutdown All");
-            })
     }
 
     render() {
@@ -60,6 +48,7 @@ class AllDevices extends Component {
                 <ButtonGroup>
                     <Button onClick={this.startAllHandler} variant={"success"}>Start</Button>
                     <Button onClick={this.stopAllHandler} variant={"danger"}>Stop</Button>
+                    <Button onClick={this.shutdownAllHandler} variant={"secondary"}>Shutdown</Button>
                 </ButtonGroup>
             </div>
         )

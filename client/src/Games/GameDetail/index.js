@@ -65,8 +65,8 @@ class GameDetailComponent extends Component {
                             <h3 style={{ display: "inline" }}>{game.team1_name}</h3> X <h3 style={{ display: "inline" }}>{game.team2_name}</h3>
                             <h2>{new Date(game.gameDate).toLocaleString('pt')}</h2>
                         </Jumbotron>
-                        <AllDevices></AllDevices>
-                        {/* TODO add button to start/stop/shutdown for all peripherals in game */}
+
+                        <AllDevices gameId={game.idGame}></AllDevices>
 
                         <CardColumns style={{ columnCount: "2" }}>
                             <Card>
