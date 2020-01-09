@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Spinner from 'react-bootstrap/Spinner';
 import AssignPeripheralModal from './AssignPeripheralModal'
-import { Jumbotron, Container, CardColumns, Card, Button } from 'react-bootstrap';
+import { Jumbotron, Container, CardColumns, Card, Button, Row } from 'react-bootstrap';
 import AllDevices from './ControlPeripherals';
 const API = '/games/';
 
@@ -71,12 +71,13 @@ class GameDetailComponent extends Component {
                         <CardColumns style={{ columnCount: "2" }}>
                             <Card>
                                 <Card.Body>
-                                    <Card.Title>{game.team1_name}</Card.Title>
+                                    <Card.Title><h2>{game.team1_name}</h2></Card.Title>
                                     {gameInfo.filter(g => g.teamId === game.team1_id)
                                         .map(ppg =>
                                             <>
                                                 <Card.Text>
-                                                    {ppg.playerName} {ppg.peripheral_id == null ?
+                                                    <h4>{ppg.playerName}</h4>
+                                                    {ppg.peripheral_id == null ?
                                                         <>
                                                             <Button variant="primary" onClick={() => this.setState({ modalShow: ppg.idPlayer_Peripheral_Game })}>
                                                                 Assign Peripheral
@@ -88,7 +89,12 @@ class GameDetailComponent extends Component {
                                                                 onHide={() => this.setState({ modalShow: false })}
                                                             />
                                                         </>
-                                                        : <>{ppg.peripheralAddress}</>}
+                                                        : <>{ppg.peripheralAddress} {ppg.peripheral_position}</>}
+                                                    {/* TODO mostrar numero do sensor */}
+                                                    {/*TODO mostrar lcoalização do sensor */}
+                                                    {/*TODO ver se o sensor está conectado*/}
+                                                    {/*TODO mudar sensor*/}
+                                                    {/*TODO ver métricas */}
                                                     {/* TODO add button to start/stop/shutdown peripheral for each player and unbind */}
                                                 </Card.Text>
                                             </>
@@ -97,12 +103,13 @@ class GameDetailComponent extends Component {
                             </Card>
                             <Card>
                                 <Card.Body>
-                                    <Card.Title>{game.team2_name}</Card.Title>
+                                    <Card.Title><h2>{game.team2_name}</h2></Card.Title>
                                     {gameInfo.filter(g => g.teamId === game.team2_id)
                                         .map(ppg =>
                                             <>
                                                 <Card.Text>
-                                                    {ppg.playerName} {ppg.peripheral_id == null ?
+                                                    <h4>{ppg.playerName}</h4>
+                                                    {ppg.peripheral_id == null ?
                                                         <>
                                                             <Button variant="primary" onClick={() => this.setState({ modalShow: ppg.idPlayer_Peripheral_Game })}>
                                                                 Assign Peripheral
@@ -114,7 +121,12 @@ class GameDetailComponent extends Component {
                                                                 onHide={() => this.setState({ modalShow: false })}
                                                             />
                                                         </>
-                                                        : <>{ppg.peripheralAddress}</>}
+                                                        : <>{ppg.peripheralAddress} {ppg.peripheral_position}</>}
+                                                    {/* TODO mostrar numero do sensor */}
+                                                    {/*TODO mostrar lcoalização do sensor */}
+                                                    {/*TODO ver se o sensor está conectado*/}
+                                                    {/*TODO mudar sensor*/}
+                                                    {/*TODO ver métricas */}
                                                     {/* TODO add button to start/stop/shutdown peripheral for each player and unbind */}
                                                 </Card.Text>
                                             </>
