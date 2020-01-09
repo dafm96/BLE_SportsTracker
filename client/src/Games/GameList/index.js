@@ -50,7 +50,7 @@ class GameListComponent extends Component {
                         </Jumbotron>
                         <ButtonToolbar>
                             <Button variant="primary" onClick={() => this.setState({ modalShow: true })}>
-                                Add New Team
+                                Add New Game
                             </Button>
 
                             <AddGameModal
