@@ -171,6 +171,7 @@ class Peripherals extends React.Component {
     }
 
     componentDidMount() {
+        this.updateInfoOnPeripherals()
         this.updateInterval = setInterval(() => {
             this.updateInfoOnPeripherals()
         }, 2000);
