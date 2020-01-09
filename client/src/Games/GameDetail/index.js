@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Spinner from 'react-bootstrap/Spinner';
 import AssignPeripheralModal from './AssignPeripheralModal'
-import { Jumbotron, Container, CardColumns, Card, Button, Row } from 'react-bootstrap';
+import { Jumbotron, Container, CardColumns, Card, Button, Row, Col } from 'react-bootstrap';
 import AllDevices from './ControlPeripherals';
 const API = '/games/';
 
@@ -68,72 +68,77 @@ class GameDetailComponent extends Component {
 
                         <AllDevices gameId={game.idGame}></AllDevices>
 
-                        <CardColumns style={{ columnCount: "2" }}>
-                            <Card>
-                                <Card.Body>
-                                    <Card.Title><h2>{game.team1_name}</h2></Card.Title>
-                                    {gameInfo.filter(g => g.teamId === game.team1_id)
-                                        .map(ppg =>
-                                            <>
-                                                <Card.Text>
-                                                    <h4>{ppg.playerName}</h4>
-                                                    {ppg.peripheral_id == null ?
-                                                        <>
-                                                            <Button variant="primary" onClick={() => this.setState({ modalShow: ppg.idPlayer_Peripheral_Game })}>
-                                                                Assign Peripheral
+                        <Container>
+                            <Row>
+                                <Col>
+                                <h2>{game.team1_name}</h2>
+                                    <CardColumns style={{ columnCount: "1" }}>
+                                        {gameInfo.filter(g => g.teamId === game.team1_id)
+                                            .map(ppg =>
+                                                <Card>
+                                                    <Card.Body>
+                                                        <Card.Title><h4>{ppg.playerName}</h4></Card.Title>
+                                                        <Card.Text>
+                                                            {ppg.peripheral_id == null ?
+                                                                <>
+                                                                    <Button variant="primary" onClick={() => this.setState({ modalShow: ppg.idPlayer_Peripheral_Game })}>
+                                                                        Assign Peripheral
+                                                            </Button>
+                                                                    <AssignPeripheralModal
+                                                                        ppgid={ppg.idPlayer_Peripheral_Game}
+                                                                        show={this.state.modalShow === ppg.idPlayer_Peripheral_Game}
+                                                                        onHide={() => this.setState({ modalShow: false })}
+                                                                    />
+                                                                </>
+                                                                : <>{ppg.peripheralAddress} {ppg.peripheral_position}</>}
+                                                            {/* TODO mostrar numero do sensor */}
+                                                            {/*TODO mostrar lcoalização do sensor */}
+                                                            {/*TODO ver se o sensor está conectado*/}
+                                                            {/*TODO mudar sensor*/}
+                                                            {/*TODO ver métricas */}
+                                                            {/* TODO add button to start/stop/shutdown peripheral for each player and unbind */}
+                                                        </Card.Text>
+                                                    </Card.Body>
+                                                </Card>
+                                            )}
+                                    </CardColumns>
+                                </Col>
+                                <hr/>
+                                <Col><h2>{game.team2_name}</h2>
+                                    <CardColumns style={{ columnCount: "1" }}>
+                                        {gameInfo.filter(g => g.teamId === game.team2_id)
+                                            .map(ppg =>
+                                                <Card>
+                                                    <Card.Body>
+                                                        <Card.Title><h4>{ppg.playerName}</h4></Card.Title>
+                                                        <Card.Text>
+                                                            {ppg.peripheral_id == null ?
+                                                                <>
+                                                                    <Button variant="primary" onClick={() => this.setState({ modalShow: ppg.idPlayer_Peripheral_Game })}>
+                                                                        Assign Peripheral
                                                             </Button>
 
-                                                            <AssignPeripheralModal
-                                                                ppgid={ppg.idPlayer_Peripheral_Game}
-                                                                show={this.state.modalShow === ppg.idPlayer_Peripheral_Game}
-                                                                onHide={() => this.setState({ modalShow: false })}
-                                                            />
-                                                        </>
-                                                        : <>{ppg.peripheralAddress} {ppg.peripheral_position}</>}
-                                                    {/* TODO mostrar numero do sensor */}
-                                                    {/*TODO mostrar lcoalização do sensor */}
-                                                    {/*TODO ver se o sensor está conectado*/}
-                                                    {/*TODO mudar sensor*/}
-                                                    {/*TODO ver métricas */}
-                                                    {/* TODO add button to start/stop/shutdown peripheral for each player and unbind */}
-                                                </Card.Text>
-                                            </>
-                                        )}
-                                </Card.Body>
-                            </Card>
-                            <Card>
-                                <Card.Body>
-                                    <Card.Title><h2>{game.team2_name}</h2></Card.Title>
-                                    {gameInfo.filter(g => g.teamId === game.team2_id)
-                                        .map(ppg =>
-                                            <>
-                                                <Card.Text>
-                                                    <h4>{ppg.playerName}</h4>
-                                                    {ppg.peripheral_id == null ?
-                                                        <>
-                                                            <Button variant="primary" onClick={() => this.setState({ modalShow: ppg.idPlayer_Peripheral_Game })}>
-                                                                Assign Peripheral
-                                                            </Button>
-
-                                                            <AssignPeripheralModal
-                                                                ppgid={ppg.idPlayer_Peripheral_Game}
-                                                                show={this.state.modalShow === ppg.idPlayer_Peripheral_Game}
-                                                                onHide={() => this.setState({ modalShow: false })}
-                                                            />
-                                                        </>
-                                                        : <>{ppg.peripheralAddress} {ppg.peripheral_position}</>}
-                                                    {/* TODO mostrar numero do sensor */}
-                                                    {/*TODO mostrar lcoalização do sensor */}
-                                                    {/*TODO ver se o sensor está conectado*/}
-                                                    {/*TODO mudar sensor*/}
-                                                    {/*TODO ver métricas */}
-                                                    {/* TODO add button to start/stop/shutdown peripheral for each player and unbind */}
-                                                </Card.Text>
-                                            </>
-                                        )}
-                                </Card.Body>
-                            </Card>
-                        </CardColumns>
+                                                                    <AssignPeripheralModal
+                                                                        ppgid={ppg.idPlayer_Peripheral_Game}
+                                                                        show={this.state.modalShow === ppg.idPlayer_Peripheral_Game}
+                                                                        onHide={() => this.setState({ modalShow: false })}
+                                                                    />
+                                                                </>
+                                                                : <>{ppg.peripheralAddress} {ppg.peripheral_position}</>}
+                                                            {/* TODO mostrar numero do sensor */}
+                                                            {/*TODO mostrar lcoalização do sensor */}
+                                                            {/*TODO ver se o sensor está conectado*/}
+                                                            {/*TODO mudar sensor*/}
+                                                            {/*TODO ver métricas */}
+                                                            {/* TODO add button to start/stop/shutdown peripheral for each player and unbind */}
+                                                        </Card.Text>
+                                                    </Card.Body>
+                                                </Card>
+                                            )}
+                                    </CardColumns>
+                                </Col>
+                            </Row>
+                        </Container>
                     </>
                 }
             </Container>
