@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Modal, Form } from 'react-bootstrap';
+import { Button, Modal, Form, Alert } from 'react-bootstrap';
 
 class AssignPeripheralToPlayerForm extends Component {
     constructor(props) {
@@ -7,13 +7,19 @@ class AssignPeripheralToPlayerForm extends Component {
         this.state = {
             ppgid: props.ppgid,
             peripherals: [],
-            peripheralAddress: ''
+            peripheralAddress: '',
+            peripheralPosition: '',
+            showAlert: false
         };
+        this.handlePeripheralLocationChange = this.handlePeripheralLocationChange.bind(this);
         this.handlePeripheralChange = this.handlePeripheralChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
     handlePeripheralChange(event) {
         this.setState({ peripheralAddress: event.target.value });
+    }
+    handlePeripheralLocationChange(event) {
+        this.setState({ peripheralPosition: event.target.value });
     }
 
     handleSubmit = event => {
@@ -28,7 +34,8 @@ class AssignPeripheralToPlayerForm extends Component {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                "peripheralAddress": this.state.peripheralAddress
+                "peripheralAddress": this.state.peripheralAddress,
+                "peripheralPosition": this.state.peripheralPosition
             })
         })
             .then(response => {
@@ -39,6 +46,9 @@ class AssignPeripheralToPlayerForm extends Component {
                     throw new Error('Something went wrong ...');
                 }
             })
+            .catch((e) =>
+                this.setState({ showAlert: true })
+            )
     }
 
     componentDidMount() {
@@ -57,18 +67,38 @@ class AssignPeripheralToPlayerForm extends Component {
 
     render() {
         return (
-            <Form onSubmit={this.handleSubmit}>
-                <Form.Group controlId="exampleForm.ControlSelect1">
-                    <Form.Label>Select Peripheral</Form.Label>
-                    <Form.Control
-                        required
-                        as="select"
-                        onChange={this.handlePeripheralChange}>
-                        {this.state.peripherals.map(p => <option key={p.address} value={p.address}>{p.address}</option>)}
-                    </Form.Control>
-                </Form.Group>
-                <Button type="submit">Submit form</Button>
-            </Form>
+            <>
+                <Form onSubmit={this.handleSubmit}>
+                    <Form.Group controlId="exampleForm.ControlSelect1">
+                        <Form.Label>Select Peripheral</Form.Label>
+                        <Form.Control
+                            required
+                            as="select"
+                            onChange={this.handlePeripheralChange}>
+                            {/*TODO make already choosen devices unavailable */}
+                            {/*TODO choose body location */}
+                            {/*TODO peripheral number */}
+                            {this.state.peripherals.map(p => <option key={p.address} value={p.address}>{p.address}</option>)}
+                        </Form.Control>
+                    </Form.Group>
+                    <Form.Group controlId="exampleForm.locationSelect">
+                        <Form.Label>Peripheral Location</Form.Label>
+                        <Form.Control
+                            required
+                            as="select"
+                            defaultValue="FOOT"
+                            onChange={this.handlePeripheralLocationChange}>
+                            <option value="FOOT">Foot</option>
+                            <option value="HAND">Hand</option>
+                            <option value="HIP">Hip</option>
+                            <option value="BACK">Back</option>
+                        </Form.Control>
+                    </Form.Group>
+                    <Alert show={this.state.showAlert} variant="danger">Device already in use!</Alert>
+                    <Button type="submit">Submit form</Button>
+                </Form>
+
+            </>
         );
     }
 }

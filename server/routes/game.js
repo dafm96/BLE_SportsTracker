@@ -39,8 +39,10 @@ router.get('/games/:gameId/info', (req, res) => {
 })
 
 router.put('/games/:ppgid', (req, res) => {
-    let q = 'UPDATE Player_Peripheral_Game SET peripheral_id = (SELECT idPeripheral FROM BLE_Sports_Tracker.Peripheral where peripheralAddress = ?) WHERE (idPlayer_Peripheral_Game = ?)';
-    connection.query(q, [req.body.peripheralAddress, req.params.ppgid], function (err, result) {
+    let q = "UPDATE Player_Peripheral_Game SET peripheral_id = (SELECT idPeripheral FROM BLE_Sports_Tracker.Peripheral where peripheralAddress = ?), "
+    + "peripheral_position = ? "
+    +"WHERE (idPlayer_Peripheral_Game = ?)";
+    connection.query(q, [req.body.peripheralAddress, req.body.peripheralPosition, req.params.ppgid], function (err, result) {
         if (err) {
             console.log(err)
             return res.status(400).send('DB error')
