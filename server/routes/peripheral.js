@@ -25,6 +25,10 @@ client.on('message', function (topic, message) {
             }
         })
     }
+    else if (topic.match(/^metrics\/\d+\/jumps/)) {
+        const obj = JSON.parse(message.toString());
+        console.log(obj)
+    }
 })
 
 router.get('/peripherals', function (req, res) {
@@ -94,6 +98,18 @@ router.post('/peripherals/game/:gameId/start', (req, res) => {
                     ppgId: item.idPlayer_Peripheral_Game,
                     peripheralPosition: item.peripheral_position
                 }))
+            switch (item.peripheral_position) {
+                case 'FOOT':
+                    client.subscribe('metrics/' + req.params.gameId + "/activityTime");
+                    break;
+                case 'HAND':
+                    client.subscribe('metrics/' + req.params.gameId + "/jumps");
+                    break;
+                case 'HIP':
+                    break;
+                case 'BACK':
+                    break;
+            }
         }
         //TODO send body part and subscribed to correspondent topic(s)
         client.subscribe('metrics/' + req.params.gameId + "/activityTime");
@@ -111,14 +127,24 @@ router.post('/peripherals/game/:gameId/stop', (req, res) => {
             return res.status(400).send('DB error')
         }
         for (const item of result) {
-            console.log(item.peripheralAddress)
             client.publish('operation',
                 JSON.stringify({
                     operation: 'stopRaw',
                     address: item.peripheralAddress,
                 }))
+                switch (item.peripheral_position) {
+                    case 'FOOT':
+                        client.unsubscribe('metrics/' + req.params.gameId + "/activityTime");
+                        break;
+                    case 'HAND':
+                        client.unsubscribe('metrics/' + req.params.gameId + "/jumps");
+                        break;
+                    case 'HIP':
+                        break;
+                    case 'BACK':
+                        break;
+                }
         }
-        client.unsubscribe('metrics/' + req.params.gameId + "/activityTime");
         res.send();
     })
 })
