@@ -28,6 +28,14 @@ client.on('message', function (topic, message) {
     else if (topic.match(/^metrics\/\d+\/jumps/)) {
         const obj = JSON.parse(message.toString());
         console.log(obj)
+        let q = "UPDATE `BLE_Sports_Tracker`.`Metrics` "
+            + "SET `jumps` = ? "
+            + "WHERE (`ppg_id` = ?)";
+        connection.query(q, [obj.jumps, obj.ppgId], function (err, result) {
+            if (err) {
+                return res.status(400).send('DB error')
+            }
+        })
     }
 })
 
@@ -81,10 +89,13 @@ router.get('/tracking', (req, res) => {
 })
 
 router.post('/peripherals/game/:gameId/start', (req, res) => {
-    let q = 'SELECT * FROM BLE_Sports_Tracker.Player_Peripheral_Game ppg '
-        + 'inner join Peripheral ph on ppg.peripheral_id = ph.idPeripheral '
-        + 'where ppg.game_id = ?';
-
+    // let q = 'SELECT * FROM BLE_Sports_Tracker.Player_Peripheral_Game ppg '
+    //     + 'inner join Peripheral ph on ppg.peripheral_id = ph.idPeripheral '
+    //     + 'where ppg.game_id = ?';
+    let q = "SELECT * FROM BLE_Sports_Tracker.Player_Peripheral_Game ppg "
+        + "inner join PG_Peripherals pgp on ppg.idPlayer_Peripheral_Game = pgp.ppg_id "
+        + "inner join Peripheral p on pgp.peripheral_id = p.idPeripheral "
+        + "where ppg.game_id = ?";
     connection.query(q, [req.params.gameId], function (err, result) {
         if (err) {
             return res.status(400).send('DB error')
@@ -118,9 +129,13 @@ router.post('/peripherals/game/:gameId/start', (req, res) => {
 })
 
 router.post('/peripherals/game/:gameId/stop', (req, res) => {
-    let q = 'SELECT * FROM BLE_Sports_Tracker.Player_Peripheral_Game ppg '
-        + 'inner join Peripheral ph on ppg.peripheral_id = ph.idPeripheral '
-        + 'where ppg.game_id = ?';
+    // let q = 'SELECT * FROM BLE_Sports_Tracker.Player_Peripheral_Game ppg '
+    //     + 'inner join Peripheral ph on ppg.peripheral_id = ph.idPeripheral '
+    //     + 'where ppg.game_id = ?';
+    let q = "SELECT * FROM BLE_Sports_Tracker.Player_Peripheral_Game ppg "
+        + "inner join PG_Peripherals pgp on ppg.idPlayer_Peripheral_Game = pgp.ppg_id "
+        + "inner join Peripheral p on pgp.peripheral_id = p.idPeripheral "
+        + "where ppg.game_id = ?";
 
     connection.query(q, [req.params.gameId], async function (err, result) {
         if (err) {
@@ -132,28 +147,31 @@ router.post('/peripherals/game/:gameId/stop', (req, res) => {
                     operation: 'stopRaw',
                     address: item.peripheralAddress,
                 }))
-                switch (item.peripheral_position) {
-                    case 'FOOT':
-                        client.unsubscribe('metrics/' + req.params.gameId + "/activityTime");
-                        break;
-                    case 'HAND':
-                        client.unsubscribe('metrics/' + req.params.gameId + "/jumps");
-                        break;
-                    case 'HIP':
-                        break;
-                    case 'BACK':
-                        break;
-                }
+            switch (item.peripheral_position) {
+                case 'FOOT':
+                    client.unsubscribe('metrics/' + req.params.gameId + "/activityTime");
+                    break;
+                case 'HAND':
+                    client.unsubscribe('metrics/' + req.params.gameId + "/jumps");
+                    break;
+                case 'HIP':
+                    break;
+                case 'BACK':
+                    break;
+            }
         }
         res.send();
     })
 })
 
 router.post('/peripherals/game/:gameId/shutdown', (req, res) => {
-    let q = 'SELECT * FROM BLE_Sports_Tracker.Player_Peripheral_Game ppg '
-        + 'inner join Peripheral ph on ppg.peripheral_id = ph.idPeripheral '
-        + 'where ppg.game_id = ?';
-
+    // let q = 'SELECT * FROM BLE_Sports_Tracker.Player_Peripheral_Game ppg '
+    //     + 'inner join Peripheral ph on ppg.peripheral_id = ph.idPeripheral '
+    //     + 'where ppg.game_id = ?';
+    let q = "SELECT * FROM BLE_Sports_Tracker.Player_Peripheral_Game ppg "
+        + "inner join PG_Peripherals pgp on ppg.idPlayer_Peripheral_Game = pgp.ppg_id "
+        + "inner join Peripheral p on pgp.peripheral_id = p.idPeripheral "
+        + "where ppg.game_id = ?";
     connection.query(q, [req.params.gameId], async function (err, result) {
         if (err) {
             return res.status(400).send('DB error')
