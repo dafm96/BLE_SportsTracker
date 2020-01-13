@@ -22,6 +22,29 @@ router.get('/games/:gameId', (req, res) => {
         res.send((result));
     })
 })
+
+router.post('/games', (req, res) => {
+    //date must be "YYYY-MM-DD HH:MM:SS" 
+    let q = 'INSERT INTO Game (gameDate, team1_id, team2_id) VALUES (?, ?, ?)'
+    connection.query(q, [req.body.date, req.body.teamId_1, req.body.teamId_2], function (err, result) {
+        if (err) {
+            return res.status(400).send('DB error:' + err)
+        }
+        res.send((result));
+    })
+})
+
+router.delete('/games/:gameId', (req, res) => {
+    let q = 'DELETE FROM Game WHERE idGame = ?';
+    connection.query(q, [req.params.gameId], function (err, result) {
+        if (err) {
+            return res.status(400).send('DB error:' + err)
+        }
+        res.send((result));
+    })
+})
+
+
 router.get('/games/metrics/:ppgId', (req, res) => {
     let q = 'SELECT * FROM Metrics WHERE ppg_id = ?';
     connection.query(q, [req.params.ppgId], function (err, result) {
@@ -77,8 +100,9 @@ router.get('/games/:gameId/info', (req, res) => {
         res.send((result));
     })
 })
+
 //TODO make sure a device is not repeated on a game
-router.put('/games/:ppgid', (req, res) => {
+router.put('/games/ppg/:ppgid', (req, res) => {
     // let q = "UPDATE Player_Peripheral_Game "
     //     + "SET peripheral_id = (SELECT idPeripheral FROM BLE_Sports_Tracker.Peripheral where peripheralAddress = ?), "
     //     + "peripheral_position = ? "
@@ -96,24 +120,20 @@ router.put('/games/:ppgid', (req, res) => {
     })
 })
 
+//TODO make sure a device is not repeated on a game
+router.delete('/games/ppg/:pgperipheralId', (req, res) => {
+    // let q = "UPDATE Player_Peripheral_Game "
+    //     + "SET peripheral_id = (SELECT idPeripheral FROM BLE_Sports_Tracker.Peripheral where peripheralAddress = ?), "
+    //     + "peripheral_position = ? "
+    //     + "WHERE (idPlayer_Peripheral_Game = ?)";
+    let q = "DELETE FROM `BLE_Sports_Tracker`.`PG_Peripherals` WHERE (`idPG_Peripherals` = ?)";
 
-router.post('/games', (req, res) => {
-    //date must be "YYYY-MM-DD HH:MM:SS" 
-    let q = 'INSERT INTO Game (gameDate, team1_id, team2_id) VALUES (?, ?, ?)'
-    connection.query(q, [req.body.date, req.body.teamId_1, req.body.teamId_2], function (err, result) {
+    connection.query(q, [req.params.pgperipheralId], function (err, result) {
         if (err) {
-            return res.status(400).send('DB error:' + err)
+            console.log(err)
+            return res.status(400).send('DB error')
         }
-        res.send((result));
-    })
-})
-
-router.delete('/games/:gameId', (req, res) => {
-    let q = 'DELETE FROM Game WHERE idGame = ?';
-    connection.query(q, [req.params.gameId], function (err, result) {
-        if (err) {
-            return res.status(400).send('DB error:' + err)
-        }
+        console.log(result)
         res.send((result));
     })
 })
