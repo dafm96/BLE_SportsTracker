@@ -30,7 +30,7 @@ class AssignPeripheralToPlayerForm extends Component {
             event.stopPropagation();
         }
         event.preventDefault();
-        fetch('/games/' + this.state.ppgid, {
+        fetch('/games/ppg/' + this.state.ppgid, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
