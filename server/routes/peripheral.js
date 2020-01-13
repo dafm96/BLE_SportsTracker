@@ -114,11 +114,11 @@ router.post('/peripherals/game/:gameId/start', (req, res) => {
                     client.subscribe('metrics/' + req.params.gameId + "/activityTime");
                     break;
                 case 'HAND':
-                    client.subscribe('metrics/' + req.params.gameId + "/jumps");
                     break;
                 case 'HIP':
                     break;
                 case 'BACK':
+                    client.subscribe('metrics/' + req.params.gameId + "/jumps");
                     break;
             }
         }
@@ -152,11 +152,11 @@ router.post('/peripherals/game/:gameId/stop', (req, res) => {
                     client.unsubscribe('metrics/' + req.params.gameId + "/activityTime");
                     break;
                 case 'HAND':
-                    client.unsubscribe('metrics/' + req.params.gameId + "/jumps");
                     break;
                 case 'HIP':
                     break;
                 case 'BACK':
+                    client.unsubscribe('metrics/' + req.params.gameId + "/jumps");
                     break;
             }
         }
