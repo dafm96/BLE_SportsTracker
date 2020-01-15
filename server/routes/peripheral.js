@@ -3,15 +3,23 @@ const router = new express.Router()
 const connection = require('../db/mysql.js');
 var mqtt = require('mqtt')
 var client = mqtt.connect('mqtt://192.168.0.122')
-let connectedDevices = []
+let connectedDevices = new Map()
 
 client.on('connect', function () {
     client.subscribe('connected');
+    client.subscribe('disconnected');
 })
 
 client.on('message', function (topic, message) {
     if (topic === 'connected') {
-        connectedDevices = (JSON.parse(message.toString()))
+        let m = (JSON.parse(message.toString()))
+        m.forEach(e => {
+            connectedDevices.set(e.address, e)
+        });
+    }
+    if (topic === 'disconnected') {
+        if (connectedDevices.has(message.toString()))
+            connectedDevices.delete(message.toString())
     }
     //TODO receive different topics and store accordingly
     else if (topic.match(/^metrics\/\d+\/activityTime/)) {
@@ -40,7 +48,7 @@ client.on('message', function (topic, message) {
 })
 
 router.get('/peripherals', function (req, res) {
-    res.send({ peripherals: connectedDevices })
+    res.send({ peripherals: Array.from(connectedDevices.values()) })
 })
 
 router.get('/peripherals/:peripheralAddress', function (req, res) {
