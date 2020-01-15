@@ -42,7 +42,6 @@ class Metrics extends Component {
                     </div>
                     :
                     <>
-                        {console.log(metrics)}
                         <ListGroup>
                             <ListGroup.Item>Jumps: {metrics.jumps || 0}</ListGroup.Item>
                             <ListGroup.Item>Steps: {metrics.steps || 0}</ListGroup.Item>

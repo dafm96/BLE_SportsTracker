@@ -8,14 +8,12 @@ const API = '/games/';
 
 const UnassignButton = (props) => {
     const [isLoading, setLoading] = useState(false);
-    console.log(props.pgpid)
     useEffect(() => {
         if (isLoading) {
             fetch('/games/ppg/' + props.pgpid, {
                 method: 'DELETE',
             })
                 .then(response => {
-                    console.log(response)
                     if (response.ok) {
                         return window.location.reload();
                         // return response.json();
@@ -24,7 +22,7 @@ const UnassignButton = (props) => {
                     }
                 })
         }
-    }, [isLoading]);
+    }, [isLoading, props.pgpid]);
 
     const handleClick = () => setLoading(true);
 
