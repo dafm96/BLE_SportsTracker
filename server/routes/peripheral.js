@@ -36,7 +36,6 @@ client.on('message', function (topic, message) {
     }
     else if (topic.match(/^metrics\/\d+\/steps/)) {
         const obj = JSON.parse(message.toString());
-        console.log(obj)
         let q = "UPDATE `BLE_Sports_Tracker`.`Metrics` "
             + "SET `steps` = ?, `distance` = ? "
             + "WHERE (`ppg_id` = ?)";
@@ -48,11 +47,21 @@ client.on('message', function (topic, message) {
     }
     else if (topic.match(/^metrics\/\d+\/jumps/)) {
         const obj = JSON.parse(message.toString());
-        console.log(obj)
         let q = "UPDATE `BLE_Sports_Tracker`.`Metrics` "
             + "SET `jumps` = ? "
             + "WHERE (`ppg_id` = ?)";
         connection.query(q, [obj.jumps, obj.ppgId], function (err, result) {
+            if (err) {
+                return res.status(400).send('DB error')
+            }
+        })
+    }
+    else if (topic.match(/^metrics\/\d+\/dribble/)) {
+        const obj = JSON.parse(message.toString());
+        let q = "UPDATE `BLE_Sports_Tracker`.`Metrics` "
+            + "SET `dribbling_time` = ? "
+            + "WHERE (`ppg_id` = ?)";
+        connection.query(q, [obj.dribbling_time, obj.ppgId], function (err, result) {
             if (err) {
                 return res.status(400).send('DB error')
             }
@@ -136,6 +145,7 @@ router.post('/peripherals/game/:gameId/start', (req, res) => {
                     client.subscribe('metrics/' + req.params.gameId + "/steps");
                     break;
                 case 'HAND':
+                    client.subscribe('metrics/' + req.params.gameId + "/dribble");
                     break;
                 case 'HIP':
                     break;
@@ -173,6 +183,7 @@ router.post('/peripherals/game/:gameId/stop', (req, res) => {
                     client.unsubscribe('metrics/' + req.params.gameId + "/steps");
                     break;
                 case 'HAND':
+                    client.unsubscribe('metrics/' + req.params.gameId + "/dribble");
                     break;
                 case 'HIP':
                     break;
