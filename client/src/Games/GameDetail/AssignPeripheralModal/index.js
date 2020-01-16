@@ -86,8 +86,8 @@ class AssignPeripheralToPlayerForm extends Component {
                         <Form.Control
                             required
                             as="select"
-                            defaultValue="FOOT"
                             onChange={this.handlePeripheralLocationChange}>
+                            <option ></option>
                             <option value="FOOT">Foot</option>
                             <option value="HAND">Hand</option>
                             <option value="HIP">Hip</option>
