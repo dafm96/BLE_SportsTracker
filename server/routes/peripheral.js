@@ -3,6 +3,7 @@ const router = new express.Router()
 const connection = require('../db/mysql.js');
 var mqtt = require('mqtt')
 var client = mqtt.connect('mqtt://192.168.0.122')
+//var client = mqtt.connect('mqtt://192.168.1.1')
 let connectedDevices = new Map()
 
 client.on('connect', function () {
@@ -28,6 +29,18 @@ client.on('message', function (topic, message) {
             + "SET `still_time` = ?, `walking_time` = ?, `running_time` = ? "
             + "WHERE (`ppg_id` = ?)";
         connection.query(q, [obj.activityTime.STILL, obj.activityTime.WALKING, obj.activityTime.RUNNING, obj.ppgId], function (err, result) {
+            if (err) {
+                return res.status(400).send('DB error')
+            }
+        })
+    }
+    else if (topic.match(/^metrics\/\d+\/steps/)) {
+        const obj = JSON.parse(message.toString());
+        console.log(obj)
+        let q = "UPDATE `BLE_Sports_Tracker`.`Metrics` "
+            + "SET `steps` = ?, `distance` = ? "
+            + "WHERE (`ppg_id` = ?)";
+        connection.query(q, [obj.steps, obj.distance, obj.ppgId], function (err, result) {
             if (err) {
                 return res.status(400).send('DB error')
             }
@@ -120,6 +133,7 @@ router.post('/peripherals/game/:gameId/start', (req, res) => {
             switch (item.peripheral_position) {
                 case 'FOOT':
                     client.subscribe('metrics/' + req.params.gameId + "/activityTime");
+                    client.subscribe('metrics/' + req.params.gameId + "/steps");
                     break;
                 case 'HAND':
                     break;
@@ -130,8 +144,6 @@ router.post('/peripherals/game/:gameId/start', (req, res) => {
                     break;
             }
         }
-        //TODO send body part and subscribed to correspondent topic(s)
-        client.subscribe('metrics/' + req.params.gameId + "/activityTime");
         res.send();
     })
 })
@@ -158,6 +170,7 @@ router.post('/peripherals/game/:gameId/stop', (req, res) => {
             switch (item.peripheral_position) {
                 case 'FOOT':
                     client.unsubscribe('metrics/' + req.params.gameId + "/activityTime");
+                    client.unsubscribe('metrics/' + req.params.gameId + "/steps");
                     break;
                 case 'HAND':
                     break;
