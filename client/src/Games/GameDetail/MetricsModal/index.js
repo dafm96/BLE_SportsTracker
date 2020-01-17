@@ -46,7 +46,6 @@ class Metrics extends Component {
                             <ListGroup.Item>Jumps: {metrics.jumps || 0}</ListGroup.Item>
                             <ListGroup.Item>Steps: {metrics.steps || 0}</ListGroup.Item>
                             <ListGroup.Item>Distance: {metrics.distance || 0} m</ListGroup.Item>
-                            <ListGroup.Item>Top Speed: {metrics.top_speed || 0} Km/h</ListGroup.Item>
                             <ListGroup.Item>Dribbles: {metrics.dribbles || 0}</ListGroup.Item>
                             <ListGroup.Item>Dribbling time: {metrics.dribbling_time || 0} s</ListGroup.Item>
                             <ListGroup.Item>Still Time: {metrics.still_time || 0} s</ListGroup.Item>
