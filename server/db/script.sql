@@ -5,6 +5,9 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+-- -----------------------------------------------------
 -- Schema BLE_Sports_Tracker
 -- -----------------------------------------------------
 
@@ -96,10 +99,11 @@ CREATE TABLE IF NOT EXISTS `BLE_Sports_Tracker`.`Metrics` (
   `steps` INT(11) NULL DEFAULT NULL,
   `distance` DOUBLE NULL DEFAULT NULL,
   `jumps` INT(11) NULL DEFAULT NULL,
+  `dribbles` INT(11) NULL DEFAULT NULL,
   `dribbling_time` DOUBLE NULL DEFAULT NULL,
   `still_time` DOUBLE NULL DEFAULT NULL,
   `walking_time` DOUBLE NULL DEFAULT NULL,
-  `running_time` VARCHAR(45) NULL DEFAULT NULL,
+  `running_time` DOUBLE NULL DEFAULT NULL,
   PRIMARY KEY (`ppg_id`),
   INDEX `fk_Metrics_Player_Peripheral_Game1_idx` (`ppg_id` ASC) VISIBLE,
   CONSTRAINT `fk_Metrics_Player_Peripheral_Game1`
@@ -142,7 +146,7 @@ CREATE TABLE IF NOT EXISTS `BLE_Sports_Tracker`.`PG_Peripherals` (
     FOREIGN KEY (`ppg_id`)
     REFERENCES `BLE_Sports_Tracker`.`Player_Peripheral_Game` (`idPlayer_Peripheral_Game`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 3
+AUTO_INCREMENT = 5
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -220,6 +224,10 @@ CREATE  OR REPLACE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY D
 DROP TABLE IF EXISTS `BLE_Sports_Tracker`.`teamPlayers`;
 USE `BLE_Sports_Tracker`;
 CREATE  OR REPLACE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `BLE_Sports_Tracker`.`teamPlayers` AS select `BLE_Sports_Tracker`.`Team`.`idTeam` AS `idTeam`,`BLE_Sports_Tracker`.`Team`.`teamName` AS `teamName`,`BLE_Sports_Tracker`.`Player`.`idPlayer` AS `idPlayer`,`BLE_Sports_Tracker`.`Player`.`playerName` AS `playerName`,`BLE_Sports_Tracker`.`Player`.`teamId` AS `teamId` from (`BLE_Sports_Tracker`.`Team` left join `BLE_Sports_Tracker`.`Player` on((`BLE_Sports_Tracker`.`Player`.`teamId` = `BLE_Sports_Tracker`.`Team`.`idTeam`)));
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 USE `BLE_Sports_Tracker`;
 
 DELIMITER $$
@@ -249,7 +257,3 @@ END$$
 
 
 DELIMITER ;
-
-SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
