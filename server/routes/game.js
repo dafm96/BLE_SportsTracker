@@ -115,7 +115,6 @@ router.put('/games/ppg/:ppgid', (req, res) => {
             console.log(err)
             return res.status(400).send('DB error')
         }
-        console.log(result)
         res.send((result));
     })
 })
@@ -133,7 +132,6 @@ router.delete('/games/ppg/:pgperipheralId', (req, res) => {
             console.log(err)
             return res.status(400).send('DB error')
         }
-        console.log(result)
         res.send((result));
     })
 })
