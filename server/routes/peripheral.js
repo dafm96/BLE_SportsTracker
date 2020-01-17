@@ -59,9 +59,9 @@ client.on('message', function (topic, message) {
     else if (topic.match(/^metrics\/\d+\/dribble/)) {
         const obj = JSON.parse(message.toString());
         let q = "UPDATE `BLE_Sports_Tracker`.`Metrics` "
-            + "SET `dribbling_time` = ? "
+            + "SET `dribbles` = ?, `dribbling_time` = ? "
             + "WHERE (`ppg_id` = ?)";
-        connection.query(q, [obj.dribbling_time, obj.ppgId], function (err, result) {
+        connection.query(q, [obj.dribbleCount, obj.dribblingTime, obj.ppgId], function (err, result) {
             if (err) {
                 return res.status(400).send('DB error')
             }
@@ -209,7 +209,6 @@ router.post('/peripherals/game/:gameId/shutdown', (req, res) => {
             return res.status(400).send('DB error')
         }
         for (const item of result) {
-            console.log(item.peripheralAddress)
             client.publish('operation',
                 JSON.stringify({
                     operation: 'shutdown',
