@@ -34,7 +34,6 @@ function App() {
               <Nav.Link as={Link} onClick={() => setExpanded(false)} to="/players">Players</Nav.Link>
               <Nav.Link as={Link} onClick={() => setExpanded(false)} to="/teams">Teams</Nav.Link>
               <Nav.Link as={Link} onClick={() => setExpanded(false)} to="/peripherals">Peripherals</Nav.Link>
-              <Nav.Link as={Link} onClick={() => setExpanded(false)} to="/plot">Plot</Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Navbar>
@@ -49,7 +48,6 @@ function App() {
           <Route path="/games/" component={GameList} />
           <Route path="/teams/:teamId" component={TeamDetail} />
           <Route path="/teams" component={TeamList} />
-          <Route path="/plot" component={PlotComponent} />
           <Route path="/peripherals" component={Peripherals} />
 
         </Switch>
