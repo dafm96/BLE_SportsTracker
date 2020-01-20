@@ -2,8 +2,8 @@ const express = require('express');
 const router = new express.Router()
 const connection = require('../db/mysql.js');
 var mqtt = require('mqtt')
-var client = mqtt.connect('mqtt://192.168.0.122')
-//var client = mqtt.connect('mqtt://192.168.1.1')
+//var client = mqtt.connect('mqtt://192.168.0.122')
+var client = mqtt.connect('mqtt://192.168.1.1')
 let connectedDevices = new Map()
 
 client.on('connect', function () {
@@ -25,6 +25,7 @@ client.on('message', function (topic, message) {
     //TODO receive different topics and store accordingly
     else if (topic.match(/^metrics\/\d+\/activityTime/)) {
         const obj = JSON.parse(message.toString());
+        console.log(obj);
         let q = "UPDATE `BLE_Sports_Tracker`.`Metrics` "
             + "SET `still_time` = ?, `walking_time` = ?, `running_time` = ? "
             + "WHERE (`ppg_id` = ?)";
@@ -36,6 +37,7 @@ client.on('message', function (topic, message) {
     }
     else if (topic.match(/^metrics\/\d+\/steps/)) {
         const obj = JSON.parse(message.toString());
+        console.log(obj);
         let q = "UPDATE `BLE_Sports_Tracker`.`Metrics` "
             + "SET `steps` = ?, `distance` = ? "
             + "WHERE (`ppg_id` = ?)";
@@ -47,6 +49,7 @@ client.on('message', function (topic, message) {
     }
     else if (topic.match(/^metrics\/\d+\/jumps/)) {
         const obj = JSON.parse(message.toString());
+        console.log(obj);
         let q = "UPDATE `BLE_Sports_Tracker`.`Metrics` "
             + "SET `jumps` = ? "
             + "WHERE (`ppg_id` = ?)";
@@ -58,10 +61,11 @@ client.on('message', function (topic, message) {
     }
     else if (topic.match(/^metrics\/\d+\/dribble/)) {
         const obj = JSON.parse(message.toString());
+        console.log(obj);
         let q = "UPDATE `BLE_Sports_Tracker`.`Metrics` "
             + "SET `dribbles` = ?, `dribbling_time` = ? "
             + "WHERE (`ppg_id` = ?)";
-        connection.query(q, [obj.dribbleCount, obj.dribblingTime, obj.ppgId], function (err, result) {
+        connection.query(q, [obj.dribbleCount, Math.round(obj.dribblingTime * 100) / 100, obj.ppgId], function (err, result) {
             if (err) {
                 return res.status(400).send('DB error')
             }
