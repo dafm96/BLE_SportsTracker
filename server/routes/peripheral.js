@@ -132,9 +132,6 @@ router.get('/tracking', (req, res) => {
 
 // Starts all peripherals for given game
 router.post('/peripherals/game/:gameId/start', (req, res) => {
-    // let q = 'SELECT * FROM BLE_Sports_Tracker.Player_Peripheral_Game ppg '
-    //     + 'inner join Peripheral ph on ppg.peripheral_id = ph.idPeripheral '
-    //     + 'where ppg.game_id = ?';
     let q = "SELECT * FROM BLE_Sports_Tracker.Player_Peripheral_Game ppg "
         + "inner join PG_Peripherals pgp on ppg.idPlayer_Peripheral_Game = pgp.ppg_id "
         + "inner join Peripheral p on pgp.peripheral_id = p.idPeripheral "
@@ -173,9 +170,6 @@ router.post('/peripherals/game/:gameId/start', (req, res) => {
 
 // Stops all peripherals for given game
 router.post('/peripherals/game/:gameId/stop', (req, res) => {
-    // let q = 'SELECT * FROM BLE_Sports_Tracker.Player_Peripheral_Game ppg '
-    //     + 'inner join Peripheral ph on ppg.peripheral_id = ph.idPeripheral '
-    //     + 'where ppg.game_id = ?';
     let q = "SELECT * FROM BLE_Sports_Tracker.Player_Peripheral_Game ppg "
         + "inner join PG_Peripherals pgp on ppg.idPlayer_Peripheral_Game = pgp.ppg_id "
         + "inner join Peripheral p on pgp.peripheral_id = p.idPeripheral "
@@ -212,9 +206,6 @@ router.post('/peripherals/game/:gameId/stop', (req, res) => {
 
 // Shutdown all peripherals for given game
 router.post('/peripherals/game/:gameId/shutdown', (req, res) => {
-    // let q = 'SELECT * FROM BLE_Sports_Tracker.Player_Peripheral_Game ppg '
-    //     + 'inner join Peripheral ph on ppg.peripheral_id = ph.idPeripheral '
-    //     + 'where ppg.game_id = ?';
     let q = "SELECT * FROM BLE_Sports_Tracker.Player_Peripheral_Game ppg "
         + "inner join PG_Peripherals pgp on ppg.idPlayer_Peripheral_Game = pgp.ppg_id "
         + "inner join Peripheral p on pgp.peripheral_id = p.idPeripheral "

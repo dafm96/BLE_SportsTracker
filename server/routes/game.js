@@ -63,18 +63,6 @@ router.get('/games/metrics/:ppgId', (req, res) => {
 //      - Teams
 //      - Players and peripherals
 router.get('/games/:gameId/info', (req, res) => {
-    // let q = 'SELECT * FROM Player_Peripheral_Game ppg '
-    //     + 'inner join Player p on ppg.player_id = p.idPlayer '
-    //     + 'inner join Team t on p.teamId = t.idTeam '
-    //     + 'inner join Peripheral ph on ppg.peripheral_id = ph.idPeripheral '
-    //     + 'where ppg.game_id = ?';
-    // let q = "SELECT * FROM Player_Peripheral_Game ppg "
-    //     + "inner join Player p on ppg.player_id = p.idPlayer "
-    //     + "inner join Team t on p.teamId = t.idTeam "
-    //     + "left join PG_Peripherals pgp on pgp.ppg_id = ppg.idPlayer_Peripheral_Game "
-    //     + "left join Peripheral pp on pgp.peripheral_id = pp.idPeripheral "
-    //     + "where ppg.game_id = ? ";
-
     let q = "SELECT idPlayer_Peripheral_Game, "
         + "player_id, "
         + "game_id, "
@@ -110,10 +98,6 @@ router.get('/games/:gameId/info', (req, res) => {
 //Assigns a peripheral (sensor) to a player in a game (ppgid)
 router.put('/games/ppg/:ppgid', (req, res) => {
     //TODO make sure a device is not repeated on a game
-    // let q = "UPDATE Player_Peripheral_Game "
-    //     + "SET peripheral_id = (SELECT idPeripheral FROM BLE_Sports_Tracker.Peripheral where peripheralAddress = ?), "
-    //     + "peripheral_position = ? "
-    //     + "WHERE (idPlayer_Peripheral_Game = ?)";
     let q = "INSERT INTO PG_Peripherals (peripheral_id, peripheral_position, ppg_id) "
         + "VALUES ((SELECT idPeripheral FROM Peripheral where peripheralAddress = ?), ?, ?)";
 
@@ -128,10 +112,6 @@ router.put('/games/ppg/:ppgid', (req, res) => {
 
 // Removes a peripheral (sensor) from a player in a game (ppgid)
 router.delete('/games/ppg/:pgperipheralId', (req, res) => {
-    // let q = "UPDATE Player_Peripheral_Game "
-    //     + "SET peripheral_id = (SELECT idPeripheral FROM BLE_Sports_Tracker.Peripheral where peripheralAddress = ?), "
-    //     + "peripheral_position = ? "
-    //     + "WHERE (idPlayer_Peripheral_Game = ?)";
     let q = "DELETE FROM `BLE_Sports_Tracker`.`PG_Peripherals` WHERE (`idPG_Peripherals` = ?)";
 
     connection.query(q, [req.params.pgperipheralId], function (err, result) {
