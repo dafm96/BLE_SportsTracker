@@ -2,6 +2,7 @@ const express = require('express');
 const router = new express.Router();
 const connection = require('../db/mysql.js');
 
+// Returns all games
 router.get('/games', (req, res) => {
     //TODO query params
     let q = 'SELECT * FROM gameTeams';
@@ -13,6 +14,7 @@ router.get('/games', (req, res) => {
     })
 })
 
+// Returns a single game
 router.get('/games/:gameId', (req, res) => {
     let q = 'SELECT * FROM gameTeams WHERE idGame = ?';
     connection.query(q, [req.params.gameId], function (err, result) {
@@ -23,6 +25,7 @@ router.get('/games/:gameId', (req, res) => {
     })
 })
 
+// Creates a game
 router.post('/games', (req, res) => {
     //date must be "YYYY-MM-DD HH:MM:SS" 
     let q = 'INSERT INTO Game (gameDate, team1_id, team2_id) VALUES (?, ?, ?)'
@@ -34,6 +37,7 @@ router.post('/games', (req, res) => {
     })
 })
 
+// Deletes a Game
 router.delete('/games/:gameId', (req, res) => {
     let q = 'DELETE FROM Game WHERE idGame = ?';
     connection.query(q, [req.params.gameId], function (err, result) {
@@ -44,7 +48,7 @@ router.delete('/games/:gameId', (req, res) => {
     })
 })
 
-
+// Gets metrics for a given player in a game (ppgid)
 router.get('/games/metrics/:ppgId', (req, res) => {
     let q = 'SELECT * FROM Metrics WHERE ppg_id = ?';
     connection.query(q, [req.params.ppgId], function (err, result) {
@@ -55,7 +59,9 @@ router.get('/games/metrics/:ppgId', (req, res) => {
     })
 })
 
-//TODO switch joins to view?
+// Gets the info from a game
+//      - Teams
+//      - Players and peripherals
 router.get('/games/:gameId/info', (req, res) => {
     // let q = 'SELECT * FROM Player_Peripheral_Game ppg '
     //     + 'inner join Player p on ppg.player_id = p.idPlayer '
@@ -101,8 +107,9 @@ router.get('/games/:gameId/info', (req, res) => {
     })
 })
 
-//TODO make sure a device is not repeated on a game
+//Assigns a peripheral (sensor) to a player in a game (ppgid)
 router.put('/games/ppg/:ppgid', (req, res) => {
+    //TODO make sure a device is not repeated on a game
     // let q = "UPDATE Player_Peripheral_Game "
     //     + "SET peripheral_id = (SELECT idPeripheral FROM BLE_Sports_Tracker.Peripheral where peripheralAddress = ?), "
     //     + "peripheral_position = ? "
@@ -119,7 +126,7 @@ router.put('/games/ppg/:ppgid', (req, res) => {
     })
 })
 
-//TODO make sure a device is not repeated on a game
+// Removes a peripheral (sensor) from a player in a game (ppgid)
 router.delete('/games/ppg/:pgperipheralId', (req, res) => {
     // let q = "UPDATE Player_Peripheral_Game "
     //     + "SET peripheral_id = (SELECT idPeripheral FROM BLE_Sports_Tracker.Peripheral where peripheralAddress = ?), "
