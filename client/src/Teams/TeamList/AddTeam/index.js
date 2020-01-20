@@ -51,7 +51,7 @@ class AddTeamForm extends Component {
                         onChange={this.handleChange}
                     />
                 </Form.Group>
-                <Button type="submit">Submit form</Button>
+                <Button type="submit">Submit Team</Button>
             </Form>
         );
     }

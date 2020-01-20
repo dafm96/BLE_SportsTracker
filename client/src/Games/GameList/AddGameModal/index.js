@@ -87,7 +87,9 @@ class AddGameForm extends Component {
                         {this.state.teams.map(team => <option key={team.idTeam} value={team.idTeam}>{team.teamName}</option>)}
                     </Form.Control>
                 </Form.Group>
-                <Form.Group>
+                <Form.Group controlId="selectDate">
+                    <Form.Label>Select Date:</Form.Label>
+                    <br/>
                     <DatePicker
                         selected={this.state.date}
                         onChange={date => this.handleChangeDate(date)}
@@ -98,7 +100,7 @@ class AddGameForm extends Component {
                         dateFormat="yyyy-MM-dd HH:mm:ss"
                     />
                 </Form.Group>
-                <Button type="submit">Submit form</Button>
+                <Button type="submit">Submit Game</Button>
             </Form>
         );
     }

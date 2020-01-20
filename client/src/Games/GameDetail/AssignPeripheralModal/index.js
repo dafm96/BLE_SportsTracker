@@ -95,7 +95,7 @@ class AssignPeripheralToPlayerForm extends Component {
                         </Form.Control>
                     </Form.Group>
                     <Alert show={this.state.showAlert} variant="danger">Device already in use!</Alert>
-                    <Button type="submit">Submit form</Button>
+                    <Button type="submit">Submit Peripheral</Button>
                 </Form>
 
             </>

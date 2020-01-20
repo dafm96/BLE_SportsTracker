@@ -47,6 +47,7 @@ class TeamDetailComponent extends Component {
                         <Jumbotron fluid className="text-center">
                             <h1>{team.teamName}</h1>
                         </Jumbotron>
+                        {/*TODO Add more info and edit fields? */}
                         <h3 >Players:</h3>
                         <ListGroup >
                             {team.players.map(player =>

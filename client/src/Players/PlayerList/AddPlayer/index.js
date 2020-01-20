@@ -78,7 +78,7 @@ class AddPlayerForm extends Component {
                         {this.state.teams.map(team => <option key={team.idTeam} value={team.idTeam}>{team.teamName}</option>)}
                     </Form.Control>
                 </Form.Group>
-                <Button type="submit">Submit form</Button>
+                <Button type="submit">Submit Player</Button>
             </Form>
         );
     }
