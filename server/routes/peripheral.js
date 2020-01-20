@@ -73,39 +73,47 @@ client.on('message', function (topic, message) {
     }
 })
 
+// Get all peripherals
 router.get('/peripherals', function (req, res) {
     res.send({ peripherals: Array.from(connectedDevices.values()) })
 })
 
+// Get single peripheral
 router.get('/peripherals/:peripheralAddress', function (req, res) {
     res.send(connectedDevices.filter(p => p.address === req.params.peripheralAddress))
 })
 
+// Starts a given peripherals
 router.post('/peripherals/:peripheralAddress/startRaw', function (req, res) {
     client.publish('operation', JSON.stringify({ operation: 'startRaw', address: req.params.peripheralAddress }))
     res.send()
 })
 
+// Stops a given peripherals
 router.post('/peripherals/:peripheralAddress/stopRaw', function (req, res) {
     client.publish('operation', JSON.stringify({ operation: 'stopRaw', address: req.params.peripheralAddress }))
     res.send()
 })
 
+// Shutdown a given peripherals
 router.post('/peripherals/:peripheralAddress/shutdown', function (req, res) {
     client.publish('operation', JSON.stringify({ operation: 'shutdown', address: req.params.peripheralAddress }))
     res.send()
 })
 
+// Starts all peripherals
 router.post('/startAllRaw', function (req, res) {
     client.publish('operation', JSON.stringify({ operation: 'startAllRaw' }))
     res.send()
 })
 
+// Stops all peripherals
 router.post('/stopAllRaw', function (req, res) {
     client.publish('operation', JSON.stringify({ operation: 'stopAllRaw' }))
     res.send()
 })
 
+// Shutdown all peripherals
 router.post('/shutdownAll', function (req, res) {
     client.publish('operation', JSON.stringify({ operation: 'shutdownAll' }))
     res.send()
@@ -122,6 +130,7 @@ router.get('/tracking', (req, res) => {
     });
 })
 
+// Starts all peripherals for given game
 router.post('/peripherals/game/:gameId/start', (req, res) => {
     // let q = 'SELECT * FROM BLE_Sports_Tracker.Player_Peripheral_Game ppg '
     //     + 'inner join Peripheral ph on ppg.peripheral_id = ph.idPeripheral '
@@ -162,6 +171,7 @@ router.post('/peripherals/game/:gameId/start', (req, res) => {
     })
 })
 
+// Stops all peripherals for given game
 router.post('/peripherals/game/:gameId/stop', (req, res) => {
     // let q = 'SELECT * FROM BLE_Sports_Tracker.Player_Peripheral_Game ppg '
     //     + 'inner join Peripheral ph on ppg.peripheral_id = ph.idPeripheral '
@@ -200,6 +210,7 @@ router.post('/peripherals/game/:gameId/stop', (req, res) => {
     })
 })
 
+// Shutdown all peripherals for given game
 router.post('/peripherals/game/:gameId/shutdown', (req, res) => {
     // let q = 'SELECT * FROM BLE_Sports_Tracker.Player_Peripheral_Game ppg '
     //     + 'inner join Peripheral ph on ppg.peripheral_id = ph.idPeripheral '
