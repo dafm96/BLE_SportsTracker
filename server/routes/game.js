@@ -123,4 +123,23 @@ router.delete('/games/ppg/:pgperipheralId', (req, res) => {
     })
 })
 
+// Calculates the dribbling time of team players in a game
+router.get('/games/:gameId/possession/', (req, res) => {
+    let q = "SELECT "
+        + "ROUND(SUM(case when p.teamId = g.team1_id then dribbling_time end),2) team1Dribbling, "
+        + "ROUND(SUM(case when p.teamId = g.team2_id then dribbling_time end),2) as team2Dribbling "
+        + "FROM BLE_Sports_Tracker.Metrics "
+        + "inner join Player_Peripheral_Game ppg on ppg_id = ppg.idPlayer_Peripheral_Game "
+        + "inner join Player p on ppg.player_id = p.idPlayer "
+        + "inner join Game g on ppg.game_id = g.idGame "
+        + "where game_id = ?";
+
+    connection.query(q, [req.params.gameId], function (err, result) {
+        if (err) {
+            console.log(err)
+            return res.status(400).send('DB error')
+        }
+        res.send(result[0]);
+    })
+})
 module.exports = router

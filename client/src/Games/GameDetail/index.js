@@ -2,7 +2,7 @@ import React, { Component, useState, useEffect } from 'react';
 import Spinner from 'react-bootstrap/Spinner';
 import AssignPeripheralModal from './AssignPeripheralModal'
 import MetricsModal from './MetricsModal'
-import { Jumbotron, Container, CardColumns, Card, Button, Row, Col, ButtonGroup, Table } from 'react-bootstrap';
+import { Jumbotron, Container, CardColumns, Card, Button, Row, Col, ButtonGroup, Table, Alert } from 'react-bootstrap';
 import AllDevices from './ControlPeripherals';
 const API = '/games/';
 
@@ -111,8 +111,30 @@ class GameDetailComponent extends Component {
             gameInfo: {},
             isLoading: true,
             error: null,
+            teamMetrics: {}
         };
+        this.updateInterval = null;
+        this.updateInfoOnTeamMetrics = this.updateInfoOnTeamMetrics.bind(this)
     }
+
+    updateInfoOnTeamMetrics() {
+        const that = this;
+        fetch("/games/" + this.state.gameId + "/possession")
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (jsonData) {
+                that.setState({ teamMetrics: jsonData });
+            })
+            .catch((e) => {
+                console.log('No connection to server.')
+            })
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.updateInterval)
+    }
+
     // TODO do this in only 1 fetch?
     componentDidMount() {
         this.setState({ isLoading: true });
@@ -137,12 +159,19 @@ class GameDetailComponent extends Component {
                     .then(data => {
                         this.setState({ gameInfo: data, isLoading: false })
                     })
+                    .then(() => {
+                        this.updateInfoOnTeamMetrics()
+                        this.updateInterval = setInterval(() => {
+                            this.updateInfoOnTeamMetrics()
+                        }, 10000);
+                    })
             )
             .catch(error => this.setState({ error, isLoading: false }));
+
     }
 
     render() {
-        const { game, gameInfo, isLoading, error } = this.state;
+        const { game, gameInfo, isLoading, error, teamMetrics } = this.state;
 
         return (
             <Container>
@@ -167,7 +196,7 @@ class GameDetailComponent extends Component {
                         <Container>
                             <Row>
                                 <Col>
-                                    <h2>{game.team1_name}</h2>
+                                    <h2>{game.team1_name}</h2> <Alert variant='secondary'>Team dribbling time: {teamMetrics['team1Dribbling'] ? teamMetrics.team1Dribbling : '0 '} s</Alert>
                                     <CardColumns style={{ columnCount: "1" }}>
                                         {gameInfo.filter(g => g.teamId === game.team1_id)
                                             .map(ppg =>
@@ -175,7 +204,8 @@ class GameDetailComponent extends Component {
                                             )}
                                     </CardColumns>
                                 </Col>
-                                <Col><h2>{game.team2_name}</h2>
+                                <Col>
+                                    <h2>{game.team1_name}</h2> <Alert variant='secondary'>Team dribbling time: {teamMetrics['team2Dribbling'] ? teamMetrics.team2Dribbling : '0 '} s</Alert>
                                     <CardColumns style={{ columnCount: "1" }}>
                                         {gameInfo.filter(g => g.teamId === game.team2_id)
                                             .map(ppg =>
