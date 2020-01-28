@@ -75,6 +75,7 @@ class AddGameForm extends Component {
                         required
                         as="select"
                         onChange={this.handleChangeTeam1}>
+                        <option ></option>
                         {this.state.teams.map(team => <option key={team.idTeam} value={team.idTeam}>{team.teamName}</option>)}
                     </Form.Control>
                 </Form.Group>
@@ -84,6 +85,7 @@ class AddGameForm extends Component {
                         required
                         as="select"
                         onChange={this.handleChangeTeam2}>
+                        <option ></option>
                         {this.state.teams.map(team => <option key={team.idTeam} value={team.idTeam}>{team.teamName}</option>)}
                     </Form.Control>
                 </Form.Group>
