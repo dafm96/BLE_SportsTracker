@@ -93,7 +93,6 @@ class TeamComponent extends Component {
                         onHide={() => this.setState({ metricsModalShow: false })}
                     />
                     {/*TODO ver se o sensor está conectado*/}
-                    {/*TODO mudar sensor*/}
                     {/* TODO add button to start/stop/shutdown peripheral for each player and unbind */}
                 </Card.Body>
             </Card>

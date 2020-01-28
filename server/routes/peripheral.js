@@ -22,7 +22,6 @@ client.on('message', function (topic, message) {
         if (connectedDevices.has(message.toString()))
             connectedDevices.delete(message.toString())
     }
-    //TODO receive different topics and store accordingly
     else if (topic.match(/^metrics\/\d+\/activityTime/)) {
         const obj = JSON.parse(message.toString());
         console.log(obj);
