@@ -24,7 +24,6 @@ client.on('message', function (topic, message) {
     }
     else if (topic.match(/^metrics\/\d+\/activityTime/)) {
         const obj = JSON.parse(message.toString());
-        console.log(obj);
         let q = "UPDATE `BLE_Sports_Tracker`.`Metrics` "
             + "SET `still_time` = ?, `walking_time` = ?, `running_time` = ? "
             + "WHERE (`ppg_id` = ?)";
@@ -150,7 +149,6 @@ router.post('/peripherals/game/:gameId/start', (req, res) => {
                 }))
             switch (item.peripheral_position) {
                 case 'FOOT':
-                    client.subscribe('metrics/' + req.params.gameId + "/activityTime");
                     client.subscribe('metrics/' + req.params.gameId + "/steps");
                     break;
                 case 'HAND':
@@ -159,6 +157,7 @@ router.post('/peripherals/game/:gameId/start', (req, res) => {
                 case 'HIP':
                     break;
                 case 'BACK':
+                    client.subscribe('metrics/' + req.params.gameId + "/activityTime");
                     client.subscribe('metrics/' + req.params.gameId + "/jumps");
                     break;
             }
@@ -186,7 +185,6 @@ router.post('/peripherals/game/:gameId/stop', (req, res) => {
                 }))
             switch (item.peripheral_position) {
                 case 'FOOT':
-                    client.unsubscribe('metrics/' + req.params.gameId + "/activityTime");
                     client.unsubscribe('metrics/' + req.params.gameId + "/steps");
                     break;
                 case 'HAND':
@@ -195,6 +193,7 @@ router.post('/peripherals/game/:gameId/stop', (req, res) => {
                 case 'HIP':
                     break;
                 case 'BACK':
+                    client.unsubscribe('metrics/' + req.params.gameId + "/activityTime");
                     client.unsubscribe('metrics/' + req.params.gameId + "/jumps");
                     break;
             }
