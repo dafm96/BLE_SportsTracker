@@ -204,7 +204,7 @@ class GameDetailComponent extends Component {
                                     </CardColumns>
                                 </Col>
                                 <Col>
-                                    <h2>{game.team1_name}</h2> <Alert variant='secondary'>Team dribbling time: {teamMetrics['team2Dribbling'] ? teamMetrics.team2Dribbling : '0 '} s</Alert>
+                                    <h2>{game.team2_name}</h2> <Alert variant='secondary'>Team dribbling time: {teamMetrics['team2Dribbling'] ? teamMetrics.team2Dribbling : '0 '} s</Alert>
                                     <CardColumns style={{ columnCount: "1" }}>
                                         {gameInfo.filter(g => g.teamId === game.team2_id)
                                             .map(ppg =>
