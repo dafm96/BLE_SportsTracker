@@ -90,7 +90,7 @@ class AssignPeripheralToPlayerForm extends Component {
                             <option ></option>
                             <option value="FOOT">Foot</option>
                             <option value="HAND">Hand</option>
-                            <option value="HIP">Hip</option>
+                            {/* <option value="HIP">Hip</option> */}
                             <option value="BACK">Back</option>
                         </Form.Control>
                     </Form.Group>
