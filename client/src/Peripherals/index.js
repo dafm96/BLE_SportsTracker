@@ -22,7 +22,10 @@ class StartButton extends React.Component {
 class AllDevices extends React.Component {
     constructor(props) {
         super(props);
-
+        this.state = {
+            isButtonDisabled: false
+        }
+        this.onLaunchClicked = this.onLaunchClicked.bind(this);
         this.startAllHandler = this.startAllHandler.bind(this)
         this.stopAllHandler = this.stopAllHandler.bind(this)
         this.shutdownAllHandler = this.shutdownAllHandler.bind(this)
@@ -55,10 +58,29 @@ class AllDevices extends React.Component {
             })
     }
 
+
+    onLaunchClicked(event) {
+        event.preventDefault();
+        this.setState({
+            isButtonDisabled: true
+        });
+
+        this.startAllHandler();
+
+        // **** here's the timeout ****
+        setTimeout(() => {
+            this.stopAllHandler();
+            this.setState({ isButtonDisabled: false })
+        }, 40000);
+
+    }
+
     render() {
         return (
             <div id="allDevices" >
                 <ButtonGroup>
+                    <button className="btn bg-success" onClick={this.onLaunchClicked}
+                        disabled={this.state.isButtonDisabled}>TEST</button>
                     <StartButton handler={this.startAllHandler} type={"success"} text={"Start All"} />
                     <StartButton handler={this.stopAllHandler} type={"danger"} text={"Stop All"} />
                     <ShutdownButton handler={this.shutdownAllHandler} type={"secondary"} text={"Shutdown All"} />
@@ -177,7 +199,7 @@ class Peripherals extends React.Component {
         }, 2000);
     }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         clearInterval(this.updateInterval)
     }
 

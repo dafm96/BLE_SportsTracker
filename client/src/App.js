@@ -33,7 +33,7 @@ function App() {
               <Nav.Link as={Link} onClick={() => setExpanded(false)} to="/games">Games</Nav.Link>
               <Nav.Link as={Link} onClick={() => setExpanded(false)} to="/players">Players</Nav.Link>
               <Nav.Link as={Link} onClick={() => setExpanded(false)} to="/teams">Teams</Nav.Link>
-              <Nav.Link as={Link} onClick={() => setExpanded(false)} to="/peripherals">Peripherals</Nav.Link>
+              {/* <Nav.Link as={Link} onClick={() => setExpanded(false)} to="/peripherals">Peripherals</Nav.Link> */}
             </Nav>
           </Navbar.Collapse>
         </Navbar>
